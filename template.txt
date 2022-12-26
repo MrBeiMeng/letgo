@@ -1,0 +1,20 @@
+package code_lists
+
+type ${structName} struct {
+}
+
+func (p ${structName}) GetTags() []string {
+	return []string{} // todo 标签
+}
+
+func (p ${structName}) RunDemo() {
+	// todo
+}
+
+func (p ${structName}) GetCodeNum() int {
+	return ${codeNum}
+}
+
+func (p ${structName}) Run(args Args) {
+	// todo
+}
