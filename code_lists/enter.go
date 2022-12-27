@@ -10,7 +10,7 @@ var CodeChallengeList CodeChallengeListObj
 
 func init() {
 	CodeChallengeList = append(CodeChallengeList, enterCodeChallenge(PalindromeLinkedList{}))
-	CodeChallengeList = append(CodeChallengeList, enterCodeChallenge(TwoSum{}))
+	CodeChallengeList = append(CodeChallengeList, enterCodeChallenge(LetGoTwoSum{}))
 	// enter new code here
 }
 
@@ -20,7 +20,7 @@ func enterCodeChallenge(baseCode BaseCode) (resultC CodeChallenge) {
 
 	resultC.CodeInfo = codeInfo
 	resultC.BaseCode = baseCode
-	resultC.CodeInfo.Tags = baseCode.GetTags()
+	resultC.CodeInfo.Tags = []string{"????"} // todo 标签问题
 	return resultC
 }
 

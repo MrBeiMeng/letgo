@@ -5,6 +5,8 @@ import (
 	"letgo_repo/code_lists"
 	"letgo_repo/data_access"
 	"letgo_repo/service/type_def"
+	"letgo_repo/utils"
+	"reflect"
 	"strconv"
 	"strings"
 )
@@ -17,7 +19,7 @@ func (c CodeServiceImpl) InitTodoCode(num int) {
 }
 
 func (c CodeServiceImpl) GetLinkedList(linkedLists string) (result []*code_lists.ListNode) {
-	return code_lists.ArgsHandlerV1.GetLinkedList(linkedLists)
+	return code_lists.ArgsHandlerV1.GetLinkedLists(linkedLists)
 }
 
 func (c CodeServiceImpl) SearchInDBByNo(codeNum int) (result code_lists.CodeInfo) {
@@ -33,31 +35,61 @@ func (c CodeServiceImpl) SearchInDBByNo(codeNum int) (result code_lists.CodeInfo
 	return result
 }
 
-func (c CodeServiceImpl) Run(codeNum int, args2 type_def.Args) {
-	args := code_lists.Args{}
-	args.ListNodes = code_lists.ArgsHandlerV1.GetLinkedList(args2.LinkedLists)
-
-	codeChallengeI := code_lists.CodeChallengeList.GetByCodeNum(codeNum)
-	var codeChallenge code_lists.CodeChallenge
-	if codeChallengeI == nil {
+func (c CodeServiceImpl) Run(codeNum int, argsStr string) {
+	// 获取对应题目
+	codeChallenge, ok := code_lists.CodeChallengeList.GetByCodeNum(codeNum)
+	if !ok {
 		fmt.Printf("查无此题[%d]", codeNum)
 		return
 	}
-	codeChallenge = codeChallengeI.(code_lists.CodeChallenge)
 
-	codeChallenge.Run(args)
+	// 获取参数列表
+	if strings.EqualFold(argsStr, "") { // 如无参数，则使用默认测试参数
+		argsStr = codeChallenge.GetTest()
+	}
+	argsStrSlice := utils.RoughSplit(argsStr)
+
+	// 运行
+	runWithStrArgs(codeChallenge.GetFunc(), argsStrSlice)
 }
 
-func (c CodeServiceImpl) RunDemo(codeNum int) {
-	codeChallengeI := code_lists.CodeChallengeList.GetByCodeNum(codeNum)
-	var codeChallenge code_lists.CodeChallenge
-	if codeChallengeI == nil {
-		fmt.Printf("查无此题[%d]", codeNum)
+func runWithStrArgs(runFunc interface{}, argsStrSlice []string) {
+	t := reflect.TypeOf(runFunc)
+	v := reflect.ValueOf(runFunc)
+
+	if len(argsStrSlice) != t.NumIn() {
+		println("参数数量错误")
 		return
 	}
-	codeChallenge = codeChallengeI.(code_lists.CodeChallenge)
 
-	codeChallenge.RunDemo()
+	var argsSlice []reflect.Value
+	for i := 0; i < t.NumIn(); i++ {
+		switch t.In(i).Kind() {
+		case reflect.Slice:
+			println(t.In(i).Name())
+			println(t.String())
+
+			sliceKind := t.In(i).Elem().Kind()
+			switch sliceKind {
+			case reflect.Int:
+				nums := code_lists.ArgsHandlerV1.GetIntArr(argsStrSlice[i])
+				argsSlice = append(argsSlice, reflect.ValueOf(nums))
+			default:
+				fmt.Printf("slice kind [%d]", sliceKind)
+			}
+		case reflect.Int:
+			num := code_lists.ArgsHandlerV1.GetInt(argsStrSlice[i])
+			argsSlice = append(argsSlice, reflect.ValueOf(num))
+		case reflect.Pointer:
+			linkedList := code_lists.ArgsHandlerV1.GetLinkedList(argsStrSlice[i])
+			argsSlice = append(argsSlice, reflect.ValueOf(linkedList))
+		default:
+			fmt.Printf("other kind [%d]", t.In(i).Kind())
+		}
+	}
+
+	called := v.Call(argsSlice)
+	fmt.Printf("%v", called)
 }
 
 func (c CodeServiceImpl) Search(queryWrapper type_def.CodeQueryWrapper) (resultList code_lists.CodeChallengeListObj) {

@@ -98,15 +98,13 @@ func (a ArgsHandler) GetIntListNode(nums ...string) (head *ListNode) {
 	return head
 }
 
-func (a ArgsHandler) GetLinkedList(linkedLists string) (result []*ListNode) {
+func (a ArgsHandler) GetLinkedLists(linkedLists string) (result []*ListNode) {
 	if linkedLists == "" {
 		return nil
 	}
 
 	for _, linkedList := range strings.Split(linkedLists, "],[") {
-		linkedList = strings.TrimSpace(linkedList)
-		linkedList = strings.ReplaceAll(linkedList, "[", "")
-		linkedList = strings.ReplaceAll(linkedList, "]", "")
+		linkedList = strings.Trim(linkedList, "[] ")
 
 		// 解析并添加链表
 		result = append(result, a.GetIntListNode(strings.Split(linkedList, ",")...))
@@ -115,7 +113,18 @@ func (a ArgsHandler) GetLinkedList(linkedLists string) (result []*ListNode) {
 	return result
 }
 
-func (a ArgsHandler) getIntArr(s string) []int {
+func (a ArgsHandler) GetLinkedList(linkedList string) (result *ListNode) {
+	if linkedList == "" {
+		return nil
+	}
+
+	linkedList = strings.Trim(linkedList, "[] ")
+	result = a.GetIntListNode(strings.Split(linkedList, ",")...)
+
+	return result
+}
+
+func (a ArgsHandler) GetIntArr(s string) []int {
 	s = strings.Trim(s, "][")
 
 	nums := make([]int, 0)
@@ -127,7 +136,7 @@ func (a ArgsHandler) getIntArr(s string) []int {
 	return nums
 }
 
-func (a ArgsHandler) getInt(s string) int {
+func (a ArgsHandler) GetInt(s string) int {
 	num, _ := strconv.Atoi(s)
 
 	return num

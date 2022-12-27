@@ -1,10 +1,5 @@
 package code_lists
 
-import (
-	"fmt"
-	"letgo_repo/utils/enum"
-)
-
 /*两数之和 | https://leetcode.cn/problems/two-sum*/
 
 /*给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出 和为目标值 target  的那 两个 整数，并返回它们的数组下标。
@@ -29,27 +24,40 @@ func twoSum(nums []int, target int) []int {
 	return nil
 }
 
-type TwoSum struct {
+type LetGoTwoSum struct { // todo 结构体名加上 LetGo前缀
 }
 
-func (p TwoSum) GetTags() []string {
-	return []string{enum.ARR, enum.HASH}
+func (p LetGoTwoSum) GetTest() string {
+	return "[2,7,11,15],9"
 }
 
-func (p TwoSum) RunDemo() {
-	arr := ArgsHandlerV1.getIntArr("[2,7,11,15]")
-	num := ArgsHandlerV1.getInt("9")
-	fmt.Printf("\tnums = %v\ttarget = %v\n", arr, num)
-
-	result := twoSum(arr, num)
-
-	fmt.Printf("\t%v", result)
+func (p LetGoTwoSum) GetFunc() interface{} {
+	return twoSum
 }
 
-func (p TwoSum) GetCodeNum() int {
+func (p LetGoTwoSum) GetCodeNum() int {
 	return 1
 }
 
-func (p TwoSum) Run(args Args) {
-	// todo
-}
+//func (p LetGoTwoSum) GetTags() []string {
+//	return []string{enum.ARR, enum.HASH}
+//}
+//
+//func (p LetGoTwoSum) RunDemo() {
+//
+//	p.twoSum(ArgsHandlerV1.getIntArr("[2,7,11,15]"), ArgsHandlerV1.getInt("9"))
+//
+//	arr := ArgsHandlerV1.getIntArr("[2,7,11,15]")
+//	num := ArgsHandlerV1.getInt("9")
+//	fmt.Printf("\tnums = %v\ttarget = %v\n", arr, num)
+//
+//	result := twoSum(arr, num)
+//
+//	fmt.Printf("\t%v", result)
+//}
+//
+
+//
+//func (p LetGoTwoSum) Run(args Args) {
+//	// todo
+//}

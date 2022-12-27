@@ -1,9 +1,5 @@
 package code_lists
 
-import (
-	"letgo_repo/utils/enum"
-)
-
 func isPalindrome(head *ListNode) bool {
 	length := getLen(head)
 	if length == 0 {
@@ -67,30 +63,39 @@ func getLen(head *ListNode) (length int) {
 type PalindromeLinkedList struct {
 }
 
-func (p PalindromeLinkedList) GetTags() []string {
-	return []string{enum.LINKED_LIST}
+func (p PalindromeLinkedList) GetTest() string {
+	return "[1,2,3,2,1]"
 }
 
-func (p PalindromeLinkedList) RunDemo() {
-	print("\t参数")
-	//head := GetIntListNode([]string{"1","2","3"}...)
-	heads := ArgsHandlerV1.GetLinkedList("[1,2,3,2,1]")
-	heads[0].Print()
-
-	print("\t结果")
-	println(isPalindrome(heads[0]))
+func (p PalindromeLinkedList) GetFunc() interface{} {
+	return isPalindrome
 }
 
 func (p PalindromeLinkedList) GetCodeNum() int {
 	return 234
 }
 
-func (p PalindromeLinkedList) Run(args Args) {
-	//head := GetIntListNodeHandler(1)
-	print("\t参数")
-	heads := args.ListNodes
-	heads[0].Print()
-
-	print("\t结果")
-	println(isPalindrome(heads[0]))
-}
+//
+//func (p PalindromeLinkedList) GetTags() []string {
+//	return []string{enum.LINKED_LIST}
+//}
+//
+//func (p PalindromeLinkedList) RunDemo() {
+//	print("\t参数")
+//	//head := GetIntListNode([]string{"1","2","3"}...)
+//	heads := ArgsHandlerV1.GetLinkedList("[1,2,3,2,1]")
+//	heads[0].Print()
+//
+//	print("\t结果")
+//	println(isPalindrome(heads[0]))
+//}
+//
+//func (p PalindromeLinkedList) Run(args Args) {
+//	//head := GetIntListNodeHandler(1)
+//	print("\t参数")
+//	heads := args.ListNodes
+//	heads[0].Print()
+//
+//	print("\t结果")
+//	println(isPalindrome(heads[0]))
+//}

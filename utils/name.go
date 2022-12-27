@@ -88,3 +88,42 @@ func (p ${structName}) Run(args Args) {
 
 	bFile.Close()
 }
+
+// RoughSplit
+//
+//	@Description: 粗切割字符串 例:"[1,2],3" - ["1,2","3"]
+//	@param s
+//	@return []string
+func RoughSplit(s string) (result []string) {
+	// [1,2,3],4,5,[6,7],8,[9],[10]
+
+	str := ""
+	splitFlag := true
+	for _, char := range s {
+		if char == '[' {
+			splitFlag = false
+		}
+
+		if !splitFlag {
+			str = fmt.Sprintf("%s%c", str, char)
+			if char == ']' {
+				splitFlag = true
+			}
+			continue
+		}
+
+		if char == ',' {
+			result = append(result, str)
+			str = ""
+			continue
+		}
+
+		str = fmt.Sprintf("%s%c", str, char)
+	}
+
+	if str != "" {
+		result = append(result, str)
+	}
+
+	return result
+}
