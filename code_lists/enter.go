@@ -9,18 +9,19 @@ import (
 var CodeChallengeList CodeChallengeListObj
 
 func init() {
-	CodeChallengeList = append(CodeChallengeList, enterCodeChallenge(PalindromeLinkedList{}))
-	CodeChallengeList = append(CodeChallengeList, enterCodeChallenge(LetGoTwoSum{}))
+	CodeChallengeList = append(CodeChallengeList, enterCodeChallenge(234, isPalindrome, "[1,2,3,2,1]"))
+	CodeChallengeList = append(CodeChallengeList, enterCodeChallenge(1, twoSum, "[2,7,11,13],9"))
 	// enter new code here
 }
 
-func enterCodeChallenge(baseCode BaseCode) (resultC CodeChallenge) {
-	question, questionStatus := data_access.ProblemsMapper.GetByCodeNum(baseCode.GetCodeNum())
+func enterCodeChallenge(codeNum int, runFunc interface{}, tests ...string) (resultC CodeChallenge) {
+	question, questionStatus := data_access.ProblemsMapper.GetByCodeNum(codeNum)
 	codeInfo := mergeToCodeInfo(question, questionStatus)
 
 	resultC.CodeInfo = codeInfo
-	resultC.BaseCode = baseCode
-	resultC.CodeInfo.Tags = []string{"????"} // todo 标签问题
+	resultC.RunFunc = runFunc
+	resultC.CodeInfo.Tags = []string{"????"}
+	resultC.CodeInfo.Tests = append(resultC.CodeInfo.Tests, tests...)
 	return resultC
 }
 

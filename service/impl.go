@@ -45,15 +45,17 @@ func (c CodeServiceImpl) Run(codeNum int, argsStr string) {
 
 	// 获取参数列表
 	if strings.EqualFold(argsStr, "") { // 如无参数，则使用默认测试参数
-		argsStr = codeChallenge.GetTest()
+		argsStr = codeChallenge.GetTests()[0]
 	}
 	argsStrSlice := utils.RoughSplit(argsStr)
 
 	// 运行
-	runWithStrArgs(codeChallenge.GetFunc(), argsStrSlice)
+	runWithStrArgs(codeChallenge.RunFunc, argsStrSlice)
 }
 
 func runWithStrArgs(runFunc interface{}, argsStrSlice []string) {
+	fmt.Printf(" args \t|%v\n", argsStrSlice)
+
 	t := reflect.TypeOf(runFunc)
 	v := reflect.ValueOf(runFunc)
 
@@ -66,9 +68,6 @@ func runWithStrArgs(runFunc interface{}, argsStrSlice []string) {
 	for i := 0; i < t.NumIn(); i++ {
 		switch t.In(i).Kind() {
 		case reflect.Slice:
-			println(t.In(i).Name())
-			println(t.String())
-
 			sliceKind := t.In(i).Elem().Kind()
 			switch sliceKind {
 			case reflect.Int:
@@ -89,7 +88,21 @@ func runWithStrArgs(runFunc interface{}, argsStrSlice []string) {
 	}
 
 	called := v.Call(argsSlice)
-	fmt.Printf("%v", called)
+
+	fmt.Printf("return\t|")
+	for _, cd := range called {
+		switch cd.Kind() {
+		case reflect.Bool:
+			fallthrough
+		case reflect.Slice:
+			fmt.Printf("%v", cd)
+		case reflect.Pointer:
+			linkedList := cd.Convert(reflect.TypeOf(code_lists.ListNode{}))
+			linkedList.MethodByName("Print").Call([]reflect.Value{}) // todo 未测试
+		default:
+			fmt.Printf("return kind | %v", cd.Kind())
+		}
+	}
 }
 
 func (c CodeServiceImpl) Search(queryWrapper type_def.CodeQueryWrapper) (resultList code_lists.CodeChallengeListObj) {

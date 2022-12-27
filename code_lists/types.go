@@ -9,14 +9,8 @@ import (
 // BaseCode
 //
 //	@Description: 实现一个力扣题目需要实现的接口
-type BaseCode interface {
-	GetTest() string
-	GetFunc() interface{}
-	GetCodeNum() int
-
-	//RunDemo()
-	//Run(args Args)
-	//GetTags() []string
+type BaseCode struct {
+	RunFunc interface{}
 }
 
 // CodeInfo
@@ -24,6 +18,7 @@ type BaseCode interface {
 type CodeInfo struct {
 	Level            string
 	Star             string
+	Tests            []string
 	Status           string
 	Visible          bool
 	CodeNum          int
@@ -40,6 +35,10 @@ func (c CodeInfo) Print() {
 %s
 -----------------`
 	fmt.Printf(printing, c.Title, c.Level, c.Description)
+}
+
+func (c CodeInfo) GetTests() []string {
+	return c.Tests
 }
 
 type CodeChallenge struct {
@@ -73,7 +72,7 @@ func (c CodeChallengeListObj) Print() {
 		return
 	}
 	for _, proj := range c {
-		strArr := getStrArr([]any{proj.GetCodeNum(), proj.Title, proj.Level, proj.Status, proj.Star, strings.Join([]string{"?"}, "·"), proj.Url})
+		strArr := getStrArr([]any{proj.CodeNum, proj.Title, proj.Level, proj.Status, proj.Star, strings.Join([]string{"?"}, "·"), proj.Url})
 		err = table.AddRow(strArr)
 		if err != nil {
 			println(err.Error())
@@ -98,7 +97,7 @@ func (c CodeChallengeListObj) EasyPrint() {
 		return
 	}
 	for _, proj := range c {
-		strArr := getStrArr([]any{proj.GetCodeNum(), proj.Title, proj.Level, strings.Join([]string{"?"}, "·"), proj.Url})
+		strArr := getStrArr([]any{proj.CodeNum, proj.Title, proj.Level, strings.Join([]string{"?"}, "·"), proj.Url})
 		err = table.AddRow(strArr)
 		if err != nil {
 			println(err.Error())
