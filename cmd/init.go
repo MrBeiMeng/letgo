@@ -34,6 +34,8 @@ var initCmd = &cobra.Command{
 		//}
 
 		utils.InitFile(codeInfo.EnglishTitleSlug, codeInfo.Url, codeInfo.Title, codeNum)
+
+		service.CodeService.InitTodoCode(codeNum)
 	},
 }
 

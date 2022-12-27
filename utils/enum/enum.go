@@ -5,4 +5,7 @@ const (
 	STRING      = "字符串"
 
 	DONE = "Done"
+	TODO = "ToDo"
+	HASH = "哈希表"
+	ARR  = "数组"
 )

@@ -3,6 +3,7 @@ package code_lists
 import (
 	"fmt"
 	"letgo_repo/utils"
+	"strconv"
 	"strings"
 	"syscall"
 )
@@ -43,7 +44,7 @@ func (l *ListNode) Print() {
 // GetIntListNodeHandler 获取链表
 //
 //	手动输入
-func GetIntListNodeHandler(argNum int) (head *ListNode) {
+func (a ArgsHandler) GetIntListNodeHandler(argNum int) (head *ListNode) {
 	numsStr, err := utils.GetInput(fmt.Sprintf("\t参数序号%d\t请输入一个链表,例如:[1,2,3,4]", argNum), 1)
 	if err != nil {
 		println(err.Error())
@@ -65,13 +66,22 @@ func GetIntListNodeHandler(argNum int) (head *ListNode) {
 		numIntArr = append(numIntArr, s)
 	}
 
-	return GetIntListNode(numIntArr...)
+	return a.GetIntListNode(numIntArr...)
+}
+
+// 获取数组
+
+// 获取字符串
+
+var ArgsHandlerV1 ArgsHandler = ArgsHandler{}
+
+type ArgsHandler struct {
 }
 
 // GetIntListNode 获取链表
 //
 //	通过参数
-func GetIntListNode(nums ...string) (head *ListNode) {
+func (a ArgsHandler) GetIntListNode(nums ...string) (head *ListNode) {
 	var tmpHead *ListNode
 	tmpHead = &ListNode{}
 	head = tmpHead
@@ -88,7 +98,7 @@ func GetIntListNode(nums ...string) (head *ListNode) {
 	return head
 }
 
-func GetLinkedList(linkedLists string) (result []*ListNode) {
+func (a ArgsHandler) GetLinkedList(linkedLists string) (result []*ListNode) {
 	if linkedLists == "" {
 		return nil
 	}
@@ -99,12 +109,26 @@ func GetLinkedList(linkedLists string) (result []*ListNode) {
 		linkedList = strings.ReplaceAll(linkedList, "]", "")
 
 		// 解析并添加链表
-		result = append(result, GetIntListNode(strings.Split(linkedList, ",")...))
+		result = append(result, a.GetIntListNode(strings.Split(linkedList, ",")...))
 	}
 
 	return result
 }
 
-// 获取数组
+func (a ArgsHandler) getIntArr(s string) []int {
+	s = strings.Trim(s, "][")
 
-// 获取字符串
+	nums := make([]int, 0)
+	for _, str := range strings.Split(s, ",") {
+		num, _ := strconv.Atoi(str)
+		nums = append(nums, num)
+	}
+
+	return nums
+}
+
+func (a ArgsHandler) getInt(s string) int {
+	num, _ := strconv.Atoi(s)
+
+	return num
+}

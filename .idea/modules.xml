@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/letgo_repo.iml" filepath="$PROJECT_DIR$/.idea/letgo_repo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/letgo.iml" filepath="$PROJECT_DIR$/.idea/letgo.iml" />
     </modules>
   </component>
 </project>

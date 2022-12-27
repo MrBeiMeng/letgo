@@ -96,3 +96,10 @@ func BPrint(a any) {
 	GlobalRetraction = GlobalRetraction[:len(GlobalRetraction)-1]
 	fmt.Printf("%s%v\n", GlobalRetraction, a)
 }
+
+func PrintArr(a ...any) {
+	for _, item := range a {
+		fmt.Printf("%v", item)
+	}
+	println()
+}

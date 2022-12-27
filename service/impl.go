@@ -12,8 +12,12 @@ import (
 type CodeServiceImpl struct {
 }
 
+func (c CodeServiceImpl) InitTodoCode(num int) {
+	data_access.ProblemsMapper.InitInsertQuestionStatus(num)
+}
+
 func (c CodeServiceImpl) GetLinkedList(linkedLists string) (result []*code_lists.ListNode) {
-	return code_lists.GetLinkedList(linkedLists)
+	return code_lists.ArgsHandlerV1.GetLinkedList(linkedLists)
 }
 
 func (c CodeServiceImpl) SearchInDBByNo(codeNum int) (result code_lists.CodeInfo) {
@@ -31,7 +35,7 @@ func (c CodeServiceImpl) SearchInDBByNo(codeNum int) (result code_lists.CodeInfo
 
 func (c CodeServiceImpl) Run(codeNum int, args2 type_def.Args) {
 	args := code_lists.Args{}
-	args.ListNodes = code_lists.GetLinkedList(args2.LinkedLists)
+	args.ListNodes = code_lists.ArgsHandlerV1.GetLinkedList(args2.LinkedLists)
 
 	codeChallengeI := code_lists.CodeChallengeList.GetByCodeNum(codeNum)
 	var codeChallenge code_lists.CodeChallenge

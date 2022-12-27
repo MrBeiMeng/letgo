@@ -74,7 +74,7 @@ func (p PalindromeLinkedList) GetTags() []string {
 func (p PalindromeLinkedList) RunDemo() {
 	print("\t参数")
 	//head := GetIntListNode([]string{"1","2","3"}...)
-	heads := GetLinkedList("[1,2,3,2,1]")
+	heads := ArgsHandlerV1.GetLinkedList("[1,2,3,2,1]")
 	heads[0].Print()
 
 	print("\t结果")

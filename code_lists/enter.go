@@ -10,6 +10,8 @@ var CodeChallengeList CodeChallengeListObj
 
 func init() {
 	CodeChallengeList = append(CodeChallengeList, enterCodeChallenge(PalindromeLinkedList{}))
+	CodeChallengeList = append(CodeChallengeList, enterCodeChallenge(TwoSum{}))
+	// enter new code here
 }
 
 func enterCodeChallenge(baseCode BaseCode) (resultC CodeChallenge) {

@@ -11,6 +11,7 @@ type CodeServiceI interface {
 	Run(codeNum int, args type_def.Args)
 	RunDemo(codeNum int)
 	SearchInDBByNo(codeNum int) code_lists.CodeInfo
+	InitTodoCode(num int)
 }
 
 var CodeService CodeServiceI = CodeServiceImpl{}
