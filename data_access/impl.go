@@ -16,34 +16,18 @@ func (p ProblemsMapperImpl) InitInsertQuestionStatus(num int) {
 	}
 }
 
-func (p ProblemsMapperImpl) GetByCodeNumInDB(codeNum int) (result models.Question) {
-	var question models.Question
+func (p ProblemsMapperImpl) GetByCodeNumInDB(codeNum int) (result models.QuestionInfo) {
+	var question models.QuestionInfo
 	MysqlDB.First(&question, codeNum) // 根据整型主键查找
 
 	return question
 }
 
-func (p ProblemsMapperImpl) GetByCodeNum(codeNum int) (question models.Question, questionStatus models.QuestionStatus) {
-	MysqlDB.First(&question, codeNum) // 根据整型主键查找
-
-	err := MysqlDB.Where("question_id=?", codeNum).Table("question_status").Find(&questionStatus).Error
+func (p ProblemsMapperImpl) GetByCodeNum(codeNum int) (question models.Question) {
+	err := MysqlDB.Raw("select questions.id, title, title_slug, article_live, article_slug, level, total_submitted, total_acs, frontend_id, translated_title, content, translated_content, code_snippets, question_id, star, status, visible from questions,question_status where questions.id = question_status.question_id and question_id = ?", codeNum).Scan(&question).Error
 	if err != nil {
 		panic(err)
 	}
 
-	return question, questionStatus
+	return question
 }
-
-//func convToCodeInfo(question models.Question, questionStatus models.QuestionStatus) code_lists.CodeInfo {
-//  result.Title = q.TranslatedTitle
-//	result.CodeNum, _ = strconv.Atoi(q.Id)
-//	result.Level = q.Level
-//	result.Description = q.TranslatedContent
-//	result.Visible = true
-//	result.Url = "https://leetcode.cn/problems/" + q.TitleSlug
-//	codeInfo := question.ConvQuestionToCodeInfo()
-//	codeInfo.Star = questionStatus.Star
-//	codeInfo.Status = questionStatus.Status
-//	codeInfo.Visible = questionStatus.Visible
-//	return codeInfo
-//}

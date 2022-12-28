@@ -31,17 +31,9 @@ var lsCmd = &cobra.Command{
 	Long:  `可以添加过滤条件`,
 	// 具体执行代码
 	Run: func(cmd *cobra.Command, args []string) {
-		queryWrapper := type_def.CodeQueryWrapper{
-			Level:      level,
-			Star:       star,
-			Status:     status,
-			ShowHidden: hidden,
-			CodeTitle:  title,
-			CodeNum:    no,
-			Tags:       tags,
-		}
-		projects := service.CodeService.Search(queryWrapper)
+		queryWrapper := getQueryWrapper()
 
+		projects := service.CodeService.Search(queryWrapper)
 		if len(projects) == 0 {
 			utils.TPrint("没有符合条件的条目")
 			return
@@ -54,6 +46,18 @@ var lsCmd = &cobra.Command{
 
 		projects.EasyPrint()
 	},
+}
+
+func getQueryWrapper() type_def.CodeQueryWrapper {
+	return type_def.CodeQueryWrapper{
+		Level:      level,
+		Star:       star,
+		Status:     status,
+		ShowHidden: hidden,
+		CodeTitle:  title,
+		CodeNum:    no,
+		Tags:       tags,
+	}
 }
 
 var level string

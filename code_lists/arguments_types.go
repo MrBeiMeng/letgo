@@ -2,27 +2,13 @@ package code_lists
 
 import (
 	"fmt"
-	"letgo_repo/utils"
 	"strconv"
 	"strings"
-	"syscall"
 )
 
 /*
 : 负责调用各种方法时提供的基本类型
 */
-
-type Args struct {
-	ListNodes []*ListNode
-}
-
-func (a Args) IsEmpty() bool {
-	if a.ListNodes != nil {
-		return false
-	}
-
-	return true
-}
 
 type ListNode struct {
 	Val  string
@@ -40,36 +26,6 @@ func (l *ListNode) Print() {
 	pStr := strings.Join(answerNums, ",")
 	fmt.Printf("[%s]\t", pStr)
 }
-
-// GetIntListNodeHandler 获取链表
-//
-//	手动输入
-func (a ArgsHandler) GetIntListNodeHandler(argNum int) (head *ListNode) {
-	numsStr, err := utils.GetInput(fmt.Sprintf("\t参数序号%d\t请输入一个链表,例如:[1,2,3,4]", argNum), 1)
-	if err != nil {
-		println(err.Error())
-		syscall.Exit(-1)
-	}
-
-	if strings.Contains(numsStr, "[") {
-		numsStr = numsStr[1:]
-	}
-	if strings.Contains(numsStr, "]") {
-		numsStr = numsStr[:len(numsStr)-1]
-	}
-
-	numStrArr := strings.Split(numsStr, ",")
-
-	numIntArr := make([]string, 0)
-	for _, s := range numStrArr {
-		//num, _ := strconv.Atoi(s)
-		numIntArr = append(numIntArr, s)
-	}
-
-	return a.GetIntListNode(numIntArr...)
-}
-
-// 获取数组
 
 // 获取字符串
 
@@ -124,6 +80,7 @@ func (a ArgsHandler) GetLinkedList(linkedList string) (result *ListNode) {
 	return result
 }
 
+// GetIntArr 获取数组
 func (a ArgsHandler) GetIntArr(s string) []int {
 	s = strings.Trim(s, "][")
 

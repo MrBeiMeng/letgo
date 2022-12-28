@@ -1,6 +1,6 @@
 package models
 
-type Question struct {
+type QuestionInfo struct {
 	Id                string
 	Title             string
 	TitleSlug         string
@@ -12,22 +12,17 @@ type Question struct {
 	FrontendId        string
 	TranslatedTitle   string
 	Content           string
+	Tags              string
 	TranslatedContent string
 	CodeSnippets      string
 }
 
-//func (q Question) ConvQuestionToCodeInfo() (result code_lists.CodeInfo) {
-//	result.Title = q.TranslatedTitle
-//	result.CodeNum, _ = strconv.Atoi(q.Id)
-//	result.Level = q.Level
-//	result.Description = q.TranslatedContent
-//	result.Visible = true
-//	result.Url = "https://leetcode.cn/problems/" + q.TitleSlug
-//	return result
-//}
+type Question struct {
+	QuestionInfo
+	QuestionStatus
+}
 
 type QuestionStatus struct {
-	Id         int
 	QuestionId string
 	Star       string
 	Status     string

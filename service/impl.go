@@ -7,9 +7,38 @@ import (
 	"letgo_repo/service/type_def"
 	"letgo_repo/utils"
 	"reflect"
-	"strconv"
 	"strings"
 )
+
+var QuestionsMap map[int]type_def.Question = make(map[int]type_def.Question)
+var QuestionsList []type_def.Question
+
+func init() {
+
+	// 注册题目
+	for _, solution := range code_lists.QuestionSolutionsV1 {
+		question := data_access.ProblemsMapper.GetByCodeNum(solution.CodeNum)
+
+		var questionValue type_def.Question
+
+		questionValue.RunFunc = solution.RunFunc
+		questionValue.Tests = solution.Tests
+		questionValue.CodeNum = solution.CodeNum
+
+		questionValue.Tags = strings.Split(question.Tags, ",")
+		questionValue.Title = question.Title
+		questionValue.Level = question.Level
+		questionValue.Url = "https://leetcode.cn/problems/" + question.TitleSlug
+		questionValue.EnglishTitleSlug = question.TitleSlug
+		questionValue.Status = question.Status
+		questionValue.Description = question.Content
+		questionValue.Star = question.Star
+		questionValue.Visible = question.Visible
+
+		QuestionsMap[questionValue.CodeNum] = questionValue
+		QuestionsList = append(QuestionsList, questionValue)
+	}
+}
 
 type CodeServiceImpl struct {
 }
@@ -18,42 +47,31 @@ func (c CodeServiceImpl) InitTodoCode(num int) {
 	data_access.ProblemsMapper.InitInsertQuestionStatus(num)
 }
 
-func (c CodeServiceImpl) GetLinkedList(linkedLists string) (result []*code_lists.ListNode) {
-	return code_lists.ArgsHandlerV1.GetLinkedLists(linkedLists)
-}
-
-func (c CodeServiceImpl) SearchInDBByNo(codeNum int) (result code_lists.CodeInfo) {
-	question := data_access.ProblemsMapper.GetByCodeNumInDB(codeNum)
-
-	result.Title = question.TranslatedTitle
-	result.CodeNum, _ = strconv.Atoi(question.Id)
-	result.Level = question.Level
-	result.Description = question.TranslatedContent
-	result.Visible = true
-	result.Url = "https://leetcode.cn/problems/" + question.TitleSlug
-	result.EnglishTitleSlug = question.TitleSlug
-	return result
-}
-
 func (c CodeServiceImpl) Run(codeNum int, argsStr string) {
 	// 获取对应题目
-	codeChallenge, ok := code_lists.CodeChallengeList.GetByCodeNum(codeNum)
+	codeChallenge, ok := QuestionsMap[codeNum]
 	if !ok {
 		fmt.Printf("查无此题[%d]", codeNum)
 		return
 	}
 
 	// 获取参数列表
-	if strings.EqualFold(argsStr, "") { // 如无参数，则使用默认测试参数
-		argsStr = codeChallenge.GetTests()[0]
+	if !strings.EqualFold(argsStr, "") { // 如无参数，则使用默认测试参数
+		runWithArgsStr(argsStr, codeChallenge)
+		return
 	}
-	argsStrSlice := utils.RoughSplit(argsStr)
 
-	// 运行
-	runWithStrArgs(codeChallenge.RunFunc, argsStrSlice)
+	for _, argsStr2 := range codeChallenge.Tests {
+		runWithArgsStr(argsStr2, codeChallenge)
+	}
 }
 
-func runWithStrArgs(runFunc interface{}, argsStrSlice []string) {
+func runWithArgsStr(argsStr string, codeChallenge type_def.Question) {
+	argsStrSlice := utils.RoughSplit(argsStr)
+	runWithStrSlice(codeChallenge.RunFunc, argsStrSlice)
+}
+
+func runWithStrSlice(runFunc interface{}, argsStrSlice []string) {
 	fmt.Printf(" args \t|%v\n", argsStrSlice)
 
 	t := reflect.TypeOf(runFunc)
@@ -105,12 +123,16 @@ func runWithStrArgs(runFunc interface{}, argsStrSlice []string) {
 	}
 }
 
-func (c CodeServiceImpl) Search(queryWrapper type_def.CodeQueryWrapper) (resultList code_lists.CodeChallengeListObj) {
+func (c CodeServiceImpl) Search(queryWrapper type_def.CodeQueryWrapper) (resultList type_def.Questions) {
 
-	for _, item := range code_lists.CodeChallengeList {
+	return resultFilter(queryWrapper, resultList)
+}
+
+func resultFilter(queryWrapper type_def.CodeQueryWrapper, resultList []type_def.Question) []type_def.Question {
+	for _, item := range QuestionsList {
 
 		if !queryWrapper.ShowHidden {
-			if item.CodeInfo.Visible == false {
+			if item.Visible == false {
 				continue
 			}
 		}
