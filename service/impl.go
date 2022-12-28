@@ -8,6 +8,7 @@ import (
 	"letgo_repo/utils"
 	"reflect"
 	"strings"
+	"time"
 )
 
 var QuestionsMap map[int]type_def.Question = make(map[int]type_def.Question)
@@ -72,7 +73,8 @@ func runWithArgsStr(argsStr string, codeChallenge type_def.Question) {
 }
 
 func runWithStrSlice(runFunc interface{}, argsStrSlice []string) {
-	fmt.Printf(" args \t|%v\n", argsStrSlice)
+	startedTime := time.Now()
+	fmt.Printf("%s| 参数列表 \t| %v\n", utils.GetColorGreen(startedTime.Format("2006-01-02:15:04:13")), argsStrSlice)
 
 	t := reflect.TypeOf(runFunc)
 	v := reflect.ValueOf(runFunc)
@@ -107,13 +109,24 @@ func runWithStrSlice(runFunc interface{}, argsStrSlice []string) {
 
 	called := v.Call(argsSlice)
 
-	fmt.Printf("return\t|")
+	duration := time.Now().Sub(startedTime) / time.Millisecond
+
+	str := utils.GetColorGreen(fmt.Sprintf("\t[%dms]\t", duration))
+	if duration > 300 {
+		str = utils.GetColorYellow(str)
+	}
+
+	if duration > 500 {
+		str = utils.GetColorRed(str)
+	}
+
+	fmt.Printf("%s| return\t|", str)
 	for _, cd := range called {
 		switch cd.Kind() {
 		case reflect.Bool:
 			fallthrough
 		case reflect.Slice:
-			fmt.Printf("%v", cd)
+			fmt.Printf(" %v", cd)
 		case reflect.Pointer:
 			linkedList := cd.Convert(reflect.TypeOf(code_lists.ListNode{}))
 			linkedList.MethodByName("Print").Call([]reflect.Value{}) // todo 未测试
