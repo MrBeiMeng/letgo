@@ -9,6 +9,7 @@ type CodeServiceI interface {
 	Run(codeNum int, args string)
 	InitTodoCode(num int)
 	GetByCodeNum(num int) type_def.Question
+	OperateLog(summary, msg, opType string)
 }
 
 var CodeService CodeServiceI = CodeServiceImpl{}

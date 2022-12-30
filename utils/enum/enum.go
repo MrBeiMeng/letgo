@@ -8,4 +8,6 @@ const (
 	TODO = "ToDo"
 	HASH = "哈希表"
 	ARR  = "数组"
+
+	INIT_CODE = "InitCode"
 )

@@ -65,3 +65,10 @@ type QuestionStatus struct {
 	Status     string
 	Visible    bool
 }
+
+type OperationRecords struct {
+	gorm.Model
+	Summary string
+	Msg     string
+	OpType  string
+}

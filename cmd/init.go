@@ -8,6 +8,7 @@ import (
 	"letgo_repo/service"
 	"letgo_repo/service/type_def"
 	"letgo_repo/utils"
+	"letgo_repo/utils/enum"
 	"strconv"
 )
 
@@ -50,6 +51,7 @@ var initCmd = &cobra.Command{
 		utils.InitFile(question.TitleSlug, question.Url, question.TitleCn, question.CodeNum, golangCodeTemplate.Code)
 
 		fmt.Printf(utils.GetColorGreen("DONE"))
+		service.CodeService.OperateLog(fmt.Sprintf("添加新题:%v", codeNum), golangCodeTemplate.Code, enum.INIT_CODE)
 	},
 }
 

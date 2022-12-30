@@ -31,6 +31,12 @@ func GenerateTable() error {
 	if err != nil {
 		return err
 	}
+
+	err = migrator.AutoMigrate(&models.OperationRecords{})
+	if err != nil {
+		return err
+	}
+
 	err = migrator.AutoMigrate(&models.TopCompanyTags{})
 	if err != nil {
 		return err

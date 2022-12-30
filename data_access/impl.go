@@ -8,6 +8,19 @@ import (
 type ProblemsMapperImpl struct {
 }
 
+func (p ProblemsMapperImpl) OperationLog(summary, msg, opType string) {
+	var operate models.OperationRecords
+
+	operate.Summary = summary
+	operate.Msg = msg
+	operate.OpType = opType
+
+	err := MysqlDB.Save(&operate).Error
+	if err != nil {
+		panic(err)
+	}
+}
+
 func (p ProblemsMapperImpl) InitInsertQuestionStatus(num int) {
 	insertSql := "insert into letgo.question_status (question_id, status) values (?,?);"
 	err := MysqlDB.Exec(insertSql, num, enum.TODO).Error

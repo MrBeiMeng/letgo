@@ -47,6 +47,10 @@ func init() {
 type CodeServiceImpl struct {
 }
 
+func (c CodeServiceImpl) OperateLog(summary, msg, opType string) {
+	data_access.ProblemsMapper.OperationLog(summary, msg, opType)
+}
+
 func (c CodeServiceImpl) GetByCodeNum(num int) (result type_def.Question) {
 
 	var question models.Questions
