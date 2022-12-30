@@ -72,3 +72,21 @@ type Question struct {
 	Star             string
 	CodeNum          int
 }
+
+type CodeTemplateResp struct {
+	Data struct {
+		Question struct {
+			QuestionId         string         `json:"questionId"`
+			QuestionFrontendId string         `json:"questionFrontendId"`
+			CodeSnippets       []CodeTemplate `json:"codeSnippets"`
+			EnvInfo            string         `json:"envInfo"`
+			EnableRunCode      bool           `json:"enableRunCode"`
+		} `json:"question"`
+	} `json:"data"`
+}
+
+type CodeTemplate struct {
+	Lang     string `json:"lang"`
+	LangSlug string `json:"langSlug"`
+	Code     string `json:"code"`
+}

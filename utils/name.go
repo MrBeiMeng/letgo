@@ -19,8 +19,8 @@ func ConvLineToCamel(name string) (camel string) {
 	return strings.Join(strs, "")
 }
 
-func InitFile(slug, url, title string, codeNum int) {
-	file, err := os.Create(fmt.Sprintf("code_lists/%s.go", strings.ReplaceAll(slug, "-", "_")))
+func InitFile(slug, url, titleCn string, codeNum int, code string) {
+	file, err := os.Create(fmt.Sprintf("code_lists/letgo_%s.go", strings.ReplaceAll(slug, "-", "_")))
 	if err != nil {
 		panic(err)
 	}
@@ -29,29 +29,11 @@ func InitFile(slug, url, title string, codeNum int) {
 	template := `package code_lists
 /*${title} | ${url}*/
 
-type ${structName} struct {
-}
-
-func (p ${structName}) GetTags() []string {
-	return []string{} // todo 标签
-}
-
-func (p ${structName}) RunDemo() {
-	// todo
-}
-
-func (p ${structName}) GetCodeNum() int {
-	return ${codeNum}
-}
-
-func (p ${structName}) Run(args Args) {
-	// todo
-}
+${code}
 `
-	template = strings.ReplaceAll(template, "${structName}", ConvLineToCamel(slug))
-	template = strings.ReplaceAll(template, "${codeNum}", fmt.Sprintf("%d", codeNum))
+	template = strings.ReplaceAll(template, "${title}", titleCn)
+	template = strings.ReplaceAll(template, "${code}", fmt.Sprintf("%s", code))
 	template = strings.ReplaceAll(template, "${url}", fmt.Sprintf("%s", url))
-	template = strings.ReplaceAll(template, "${title}", fmt.Sprintf("%s", title))
 
 	file.WriteString(template)
 
@@ -76,8 +58,11 @@ func (p ${structName}) Run(args Args) {
 	}
 	oFile.Close()
 
-	newLine := `CodeChallengeList = append(CodeChallengeList, enterCodeChallenge(${structName}{}))
-	// enter new code here`
+	methodName := strings.TrimLeft(strings.Split(code, "(")[0], "func ")
+
+	newLine := fmt.Sprintf(`QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(%d, %s))
+	// enter new code here`, codeNum, methodName)
+
 	allStr := strings.ReplaceAll(string(all), "// enter new code here", strings.ReplaceAll(newLine, "${structName}", ConvLineToCamel(slug)))
 
 	bFile, err := os.OpenFile("code_lists/enter.go", syscall.O_RDWR, 777)

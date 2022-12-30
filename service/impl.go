@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"letgo_repo/code_lists"
 	"letgo_repo/data_access"
+	"letgo_repo/data_access/models"
 	"letgo_repo/service/type_def"
 	"letgo_repo/utils"
 	"reflect"
@@ -44,6 +45,19 @@ func init() {
 }
 
 type CodeServiceImpl struct {
+}
+
+func (c CodeServiceImpl) GetByCodeNum(num int) (result type_def.Question) {
+
+	var question models.Questions
+
+	data_access.MysqlDB.Where("frontend_question_id = ?", num).First(&question)
+
+	result.Questions = question
+	result.Url = "https://leetcode.cn/problems/" + question.TitleSlug
+	codeNum, _ := strconv.Atoi(question.FrontendQuestionId)
+	result.CodeNum = codeNum
+	return result
 }
 
 func (c CodeServiceImpl) InitTodoCode(num int) {

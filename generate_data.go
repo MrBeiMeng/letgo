@@ -4,48 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"gorm.io/gorm/clause"
-	"io/ioutil"
 	"letgo_repo/data_access"
 	"letgo_repo/data_access/models"
 	"letgo_repo/generate"
 	"letgo_repo/utils"
-	"net/http"
-	"strings"
 	"time"
 )
-
-func HttpPost(url string, cookies string, headerMap map[string]string, requestBody string) []byte {
-	client := &http.Client{}
-	// ...
-	req, err := http.NewRequest("POST", url, strings.NewReader(requestBody))
-	if err != nil {
-		panic(err)
-	}
-
-	for _, cookie := range strings.Split(cookies, ";") {
-		cookie = strings.TrimSpace(cookie)
-		cs := strings.Split(cookie, "=")
-		name := cs[0]
-		value := cs[1]
-		req.AddCookie(&http.Cookie{Name: name, Value: value})
-	}
-
-	for key, value := range headerMap {
-		req.Header.Add(key, value)
-	}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		panic(err)
-	}
-
-	all, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		panic(err)
-	}
-
-	return all
-}
 
 func main() {
 
@@ -85,7 +49,7 @@ func main() {
 func initQuestionList(cookies string, headerMap map[string]string, skip int) {
 	// 获取列表
 	postBody := "{\"query\":\"\\n    query problemsetQuestionList($categorySlug: String, $limit: Int, $skip: Int, $filters: QuestionListFilterInput) {\\n  problemsetQuestionList(\\n    categorySlug: $categorySlug\\n    limit: $limit\\n    skip: $skip\\n    filters: $filters\\n  ) {\\n    hasMore\\n    total\\n    questions {\\n      acRate\\n      difficulty\\n      freqBar\\n      frontendQuestionId\\n      isFavor\\n      paidOnly\\n      solutionNum\\n      status\\n      title\\n      titleCn\\n      titleSlug\\n      topicTags {\\n        name\\n        nameTranslated\\n        id\\n        slug\\n      }\\n      extra {\\n        hasVideoSolution\\n        topCompanyTags {\\n          imgUrl\\n          slug\\n          numSubscribed\\n        }\\n      }\\n    }\\n  }\\n}\\n    \",\"variables\":{\"categorySlug\":\"\",\"skip\":%d,\"limit\":100,\"filters\":{}}}"
-	questionListBytes := HttpPost(`https://leetcode.cn/graphql/`, cookies, headerMap, fmt.Sprintf(postBody, skip))
+	questionListBytes := utils.HttpPost(`https://leetcode.cn/graphql/`, cookies, headerMap, fmt.Sprintf(postBody, skip))
 
 	var questionList generate.QuestionList
 	err := json.Unmarshal(questionListBytes, &questionList)
@@ -185,6 +149,6 @@ func convToModelQuestion(question generate.Questions) (result models.Questions) 
 
 func InitQuestionDetail(cookies string, headerMap map[string]string, question models.Questions) []byte {
 	reqBody := "{\"query\":\"\\n    query questionEditorData($titleSlug: String!) {\\n  question(titleSlug: $titleSlug) {\\n    questionId\\n    questionFrontendId\\n    codeSnippets {\\n      lang\\n      langSlug\\n      code\\n    }\\n    envInfo\\n    enableRunCode\\n  }\\n}\\n    \",\"variables\":{\"titleSlug\":\"%s\"}}"
-	questionDetail := HttpPost(`https://leetcode.cn/graphql/`, cookies, headerMap, fmt.Sprintf(reqBody, question.TitleSlug))
+	questionDetail := utils.HttpPost(`https://leetcode.cn/graphql/`, cookies, headerMap, fmt.Sprintf(reqBody, question.TitleSlug))
 	return questionDetail
 }
