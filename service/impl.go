@@ -82,8 +82,11 @@ func (c CodeServiceImpl) Run(codeNum int, argsStr string) {
 		return
 	}
 
+	fmt.Printf("| 运行时间\t| %s\n", utils.GetColorGreen(time.Now().Format("2006-01-02 15:04:13")))
+
 	for _, argsStr2 := range codeChallenge.Tests {
 		runWithArgsStr(argsStr2, codeChallenge)
+		fmt.Printf("\n")
 	}
 }
 
@@ -93,8 +96,7 @@ func runWithArgsStr(argsStr string, codeChallenge type_def.Question) {
 }
 
 func runWithStrSlice(runFunc interface{}, argsStrSlice []string) {
-	startedTime := time.Now()
-	fmt.Printf("%s| 参数列表 \t| %v\n", utils.GetColorGreen(startedTime.Format("2006-01-02:15:04:13")), argsStrSlice)
+	fmt.Printf("| 参数列表 \t| %v\t|\n", strings.Join(argsStrSlice, ","))
 
 	t := reflect.TypeOf(runFunc)
 	v := reflect.ValueOf(runFunc)
@@ -127,11 +129,13 @@ func runWithStrSlice(runFunc interface{}, argsStrSlice []string) {
 		}
 	}
 
+	startedTime := time.Now()
 	called := v.Call(argsSlice)
+	time.Sleep(time.Millisecond)
 
-	duration := time.Now().Sub(startedTime) / time.Millisecond
+	duration := time.Now().Sub(startedTime) - time.Millisecond
 
-	str := utils.GetColorGreen(fmt.Sprintf("\t[%dms]\t", duration))
+	str := utils.GetColorGreen(fmt.Sprintf("\t[%v]\t", duration))
 	if duration > 300 {
 		str = utils.GetColorYellow(str)
 	}
@@ -140,13 +144,15 @@ func runWithStrSlice(runFunc interface{}, argsStrSlice []string) {
 		str = utils.GetColorRed(str)
 	}
 
-	fmt.Printf("%s| return\t|", str)
+	fmt.Printf("| return\t|")
 	for _, cd := range called {
 		switch cd.Kind() {
+		case reflect.Int:
+			fallthrough
 		case reflect.Bool:
 			fallthrough
 		case reflect.Slice:
-			fmt.Printf(" %v", cd)
+			fmt.Printf(" %v\t", cd)
 		case reflect.Pointer:
 			linkedList := cd.Convert(reflect.TypeOf(code_lists.ListNode{}))
 			linkedList.MethodByName("Print").Call([]reflect.Value{}) // todo 未测试
@@ -154,6 +160,7 @@ func runWithStrSlice(runFunc interface{}, argsStrSlice []string) {
 			fmt.Printf("return kind | %v", cd.Kind())
 		}
 	}
+	fmt.Printf("%s", str)
 }
 
 func (c CodeServiceImpl) Search(queryWrapper type_def.CodeQueryWrapper) (resultList type_def.Questions) {

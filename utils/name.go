@@ -58,7 +58,7 @@ ${code}
 	}
 	oFile.Close()
 
-	methodName := strings.TrimLeft(strings.Split(code, "(")[0], "func ")
+	methodName := strings.Split(strings.Split(code, "(")[0], "func ")[1]
 
 	newLine := fmt.Sprintf(`QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(%d, %s))
 	// enter new code here`, codeNum, methodName)
