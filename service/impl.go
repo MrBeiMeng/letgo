@@ -7,6 +7,7 @@ import (
 	"letgo_repo/service/type_def"
 	"letgo_repo/utils"
 	"reflect"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -22,21 +23,22 @@ func init() {
 
 		var questionValue type_def.Question
 
-		questionValue.RunFunc = solution.RunFunc
-		questionValue.Tests = solution.Tests
-		questionValue.CodeNum = solution.CodeNum
-
-		questionValue.Tags = strings.Split(question.Tags, ",")
-		questionValue.Title = question.Title
-		questionValue.Level = question.Level
+		questionValue.Questions = question
 		questionValue.Url = "https://leetcode.cn/problems/" + question.TitleSlug
-		questionValue.EnglishTitleSlug = question.TitleSlug
-		questionValue.Status = question.Status
-		questionValue.Description = question.Content
-		questionValue.Star = question.Star
-		questionValue.Visible = question.Visible
+		for _, topTag := range questionValue.TopicTags {
+			questionValue.Tags = append(questionValue.Tags, topTag.NameTranslated)
+		}
 
-		QuestionsMap[questionValue.CodeNum] = questionValue
+		for _, topCompanyTag := range questionValue.TopCompanyTags {
+			questionValue.TopUsedCompanies = append(questionValue.TopUsedCompanies, topCompanyTag.Slug)
+		}
+		codeNum, _ := strconv.Atoi(questionValue.FrontendQuestionId)
+		questionValue.RunFunc = solution.RunFunc
+		for _, test := range solution.Tests {
+			questionValue.Tests = append(questionValue.Tests, test)
+		}
+		questionValue.CodeNum = codeNum
+		QuestionsMap[codeNum] = questionValue
 		QuestionsList = append(QuestionsList, questionValue)
 	}
 }
@@ -154,7 +156,7 @@ func resultFilter(queryWrapper type_def.CodeQueryWrapper, resultList []type_def.
 			continue
 		}
 
-		if queryWrapper.Level != "" && !strings.EqualFold(queryWrapper.Level, item.Level) {
+		if queryWrapper.Level != "" && !strings.EqualFold(queryWrapper.Level, item.Difficulty) {
 			continue
 		}
 

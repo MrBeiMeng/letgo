@@ -5,7 +5,7 @@ import (
 )
 
 type ProblemsMapperI interface {
-	GetByCodeNum(codeNum int) (question models.Question)
+	GetByCodeNum(codeNum int) (question models.Questions)
 	GetByCodeNumInDB(CodeNum int) models.QuestionInfo
 	InitInsertQuestionStatus(num int)
 }

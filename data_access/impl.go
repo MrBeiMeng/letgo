@@ -23,8 +23,18 @@ func (p ProblemsMapperImpl) GetByCodeNumInDB(codeNum int) (result models.Questio
 	return question
 }
 
-func (p ProblemsMapperImpl) GetByCodeNum(codeNum int) (question models.Question) {
-	err := MysqlDB.Raw("select questions.id, title, title_slug, article_live, article_slug, level, total_submitted, total_acs, frontend_id, translated_title, content, translated_content, code_snippets, question_id, star, status, visible from questions,question_status where questions.id = question_status.question_id and question_id = ?", codeNum).Scan(&question).Error
+func (p ProblemsMapperImpl) GetByCodeNum(codeNum int) (question models.Questions) {
+	err := MysqlDB.Where("frontend_question_id = ?", codeNum).First(&question).Error
+	if err != nil {
+		panic(err)
+	}
+
+	err = MysqlDB.Model(&question).Association("TopicTags").Find(&question.TopicTags)
+	if err != nil {
+		panic(err)
+	}
+
+	err = MysqlDB.Model(&question).Association("TopCompanyTags").Find(&question.TopCompanyTags)
 	if err != nil {
 		panic(err)
 	}

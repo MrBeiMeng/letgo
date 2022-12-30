@@ -3,6 +3,7 @@ package type_def
 import (
 	"fmt"
 	"github.com/liushuochen/gotable"
+	"letgo_repo/data_access/models"
 	"strings"
 )
 
@@ -25,7 +26,7 @@ func (q Questions) Print() {
 		return
 	}
 	for _, proj := range q {
-		strArr := getStrArr([]any{proj.CodeNum, proj.Title, proj.Level, proj.Status, proj.Star, strings.Join([]string{"?"}, "·"), proj.Url})
+		strArr := getStrArr([]any{proj.CodeNum, proj.Title, proj.Difficulty, proj.Status, proj.Star, strings.Join([]string{"?"}, "·"), proj.Url})
 		err = table.AddRow(strArr)
 		if err != nil {
 			println(err.Error())
@@ -50,7 +51,7 @@ func (q Questions) EasyPrint() {
 		return
 	}
 	for _, proj := range q {
-		strArr := getStrArr([]any{proj.CodeNum, proj.Title, proj.Level, strings.Join([]string{"?"}, "·"), proj.Url})
+		strArr := getStrArr([]any{proj.FrontendQuestionId, proj.Title, proj.Difficulty, strings.Join([]string{"?"}, "·"), proj.TopicTags})
 		err = table.AddRow(strArr)
 		if err != nil {
 			println(err.Error())
@@ -61,16 +62,13 @@ func (q Questions) EasyPrint() {
 }
 
 type Question struct {
-	RunFunc          interface{}
-	Level            string
-	Star             string
-	Tests            []string
-	Status           string
-	Visible          bool
-	CodeNum          int
-	Title            string
-	EnglishTitleSlug string
-	Description      string
-	Tags             []string
+	RunFunc interface{}
+	models.Questions
 	Url              string
+	Tags             []string
+	TopUsedCompanies []string
+	Tests            []string
+	Visible          bool
+	Star             string
+	CodeNum          int
 }
