@@ -26,7 +26,7 @@ func (q Questions) Print() {
 		return
 	}
 	for _, proj := range q {
-		strArr := getStrArr([]any{proj.CodeNum, proj.Title, proj.Difficulty, proj.Status, proj.Star, strings.Join([]string{"?"}, "·"), proj.Url})
+		strArr := getStrArr([]any{proj.CodeNum, proj.TitleCn, proj.Difficulty, proj.Status, proj.Star, strings.Join(proj.Tags, "·"), proj.Url})
 		err = table.AddRow(strArr)
 		if err != nil {
 			println(err.Error())

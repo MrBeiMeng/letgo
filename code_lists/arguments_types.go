@@ -86,6 +86,10 @@ func (a ArgsHandler) GetIntArr(s string) []int {
 
 	nums := make([]int, 0)
 	for _, str := range strings.Split(s, ",") {
+		if strings.EqualFold(str, "") {
+			continue
+		}
+
 		num, _ := strconv.Atoi(str)
 		nums = append(nums, num)
 	}
