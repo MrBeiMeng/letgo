@@ -2,7 +2,7 @@
 <data>
   <object-set>
     <schema path="letgo">
-      <view name="mine_code_lists" query="# 已完成的题目列表&#xa;select frontend_question_id as code_num,title_cn,concat(format(ac_rate*100,2),&apos;%&apos;) as &apos;通过率&apos;,company_tag_num as CTN,tags&#xa;from questions,(select group_concat(name_translated) as tags,questions_id from topic_tags,questions_topic_tags,questions where topic_tags.id = questions_topic_tags.topic_tags_id and questions_id = questions.id and questions.status = &apos;AC&apos; group by questions_id) as tags&#xa;where status = &apos;AC&apos; and tags.questions_id = questions.id;"/>
+      <view name="mine_code_list" query="# 已完成的题目列表&#xa;select frontend_question_id as code_num,title_cn,concat(format(ac_rate*100,2),&apos;%&apos;) as &apos;通过率&apos;,company_tag_num as CTN,tags&#xa;from questions,(select group_concat(name_translated) as tags,questions_id from topic_tags,questions_topic_tags,questions where topic_tags.id = questions_topic_tags.topic_tags_id and questions_id = questions.id and questions.status = &apos;AC&apos; group by questions_id) as tags&#xa;where status = &apos;AC&apos; and tags.questions_id = questions.id;"/>
     </schema>
   </object-set>
 </data>
