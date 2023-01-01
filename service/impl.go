@@ -124,8 +124,11 @@ func runWithStrSlice(runFunc interface{}, argsStrSlice []string) {
 		case reflect.Pointer:
 			linkedList := code_lists.ArgsHandlerV1.GetLinkedList(argsStrSlice[i])
 			argsSlice = append(argsSlice, reflect.ValueOf(linkedList))
+		case reflect.String:
+			argsSlice = append(argsSlice, reflect.ValueOf(argsStrSlice[i]))
 		default:
-			fmt.Printf("other kind [%d]", t.In(i).Kind())
+			fmt.Printf(utils.GetColorRed("other kind [%d]\n"), t.In(i).Kind())
+			panic("stopped")
 		}
 	}
 

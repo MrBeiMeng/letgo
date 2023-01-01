@@ -20,13 +20,13 @@ type CodeQueryWrapper struct {
 type Questions []Question
 
 func (q Questions) Print() {
-	table, err := gotable.Create("no.", "title", "level", "status", "star", "tags", "CTN", "url")
+	table, err := gotable.Create("no.", "title", "level", "status", "tags", "CTN", "url")
 	if err != nil {
 		println(err.Error())
 		return
 	}
 	for _, proj := range q {
-		strArr := getStrArr([]any{proj.CodeNum, proj.TitleCn, proj.Difficulty, proj.Status, proj.Star, strings.Join(proj.Tags, "·"), proj.CompanyTagNum, proj.Url})
+		strArr := getStrArr([]any{proj.CodeNum, proj.TitleCn, proj.Difficulty, proj.Status, strings.Join(proj.Tags, "·"), proj.CompanyTagNum, proj.Url})
 		err = table.AddRow(strArr)
 		if err != nil {
 			println(err.Error())
