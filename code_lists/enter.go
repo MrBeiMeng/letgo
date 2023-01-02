@@ -16,6 +16,8 @@ func init() {
 	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(485, findMaxConsecutiveOnes, "[1,1,0,1,1,1]", "[1,0,1,1,0,1]"))
 	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(495, findPoisonedDuration, "[1,4],2", "[1,2],2"))
 	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(13, romanToInt, "III", "IV", "IX", "LVIII", "MCMXCIV"))
+	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(383, canConstruct, ""))
+	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(412, fizzBuzz))
 	// enter new code here
 }
 

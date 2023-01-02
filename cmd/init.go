@@ -50,7 +50,7 @@ var initCmd = &cobra.Command{
 
 		utils.InitFile(question.TitleSlug, question.Url, question.TitleCn, question.CodeNum, golangCodeTemplate.Code)
 
-		fmt.Printf(utils.GetColorGreen("DONE"))
+		fmt.Printf("%s| Inited %d %s %s", utils.GetColorGreen("DONE"), question.CodeNum, question.TitleCn, question.Url)
 		service.CodeService.OperateLog(fmt.Sprintf("添加新题:%v", codeNum), golangCodeTemplate.Code, enum.INIT_CODE)
 	},
 }
