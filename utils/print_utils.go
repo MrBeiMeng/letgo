@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"github.com/liushuochen/gotable"
 	"strings"
 )
 
@@ -23,33 +24,22 @@ import (
 
 var GlobalRetraction = make([]string, 0)
 
-func TablePrint(table [][]any) {
-	if len(table) == 0 {
+func TablePrint(strTable [][]string) {
+
+	table, err := gotable.Create(strTable[0]...)
+	if err != nil {
+		println(err.Error())
 		return
 	}
 
-	// 统计每列最长的长度
-	columnWList := make([]int, len(table[1]))
-	for _, a := range table {
-		if a == nil {
-			continue
-		}
-		for j, item := range a {
-			columnWidth := len(fmt.Sprintf("%v", item))
-			if columnWidth >= columnWList[j] {
-				columnWList[j] = columnWidth
-			}
+	for i := 1; i < len(strTable); i++ {
+		err = table.AddRow(strTable[i])
+		if err != nil {
+			println(err.Error())
 		}
 	}
 
-	// 补齐每列的长度之后再打印
-	for _, row := range table {
-		rowStrList := make([]any, 0)
-		for j, item := range row {
-			rowStrList = append(rowStrList, ConvLengthTo(item, columnWList[j]))
-		}
-		RowPrint(rowStrList...)
-	}
+	println(table.String())
 }
 
 func ConvLengthTo(a any, length int) string {
@@ -63,7 +53,7 @@ func ConvLengthTo(a any, length int) string {
 
 func RowPrint(a ...any) {
 	for _, item := range a {
-		fmt.Printf("\t|%v", item)
+		fmt.Printf("|%v\t", item)
 	}
 	println()
 }

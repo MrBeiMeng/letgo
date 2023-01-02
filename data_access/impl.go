@@ -8,6 +8,26 @@ import (
 type ProblemsMapperImpl struct {
 }
 
+func (p ProblemsMapperImpl) CountDone(codeNums []string) (num int) {
+	selectSql := "select count(1) from questions where status = 'AC' and frontend_question_id in ? ;"
+
+	err := MysqlDB.Raw(selectSql, codeNums).Scan(&num).Error
+	if err != nil {
+		panic(err)
+	}
+
+	return num
+}
+
+func (p ProblemsMapperImpl) GetTodos() (resultList []models.ToDoQuestion) {
+	err := MysqlDB.Order("sort").Find(&resultList).Error
+	if err != nil {
+		panic(err)
+	}
+
+	return
+}
+
 func (p ProblemsMapperImpl) OperationLog(summary, msg, opType string) {
 	var operate models.OperationRecords
 
@@ -22,7 +42,7 @@ func (p ProblemsMapperImpl) OperationLog(summary, msg, opType string) {
 }
 
 func (p ProblemsMapperImpl) InitInsertQuestionStatus(num int) {
-	insertSql := "insert into letgo.question_status (question_id, status) values (?,?);"
+	insertSql := "-"
 	err := MysqlDB.Exec(insertSql, num, enum.TODO).Error
 	if err != nil {
 		panic(err)

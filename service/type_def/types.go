@@ -10,6 +10,13 @@ import (
 // AnyFunc 一个方法
 type AnyFunc interface{}
 
+type ToDoQuestion struct {
+	Theme    string
+	CodeNums string
+	Progress string
+	Master   bool
+}
+
 type CodeQueryWrapper struct {
 	Level      string
 	Star       string

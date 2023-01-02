@@ -72,3 +72,11 @@ type OperationRecords struct {
 	Msg     string
 	OpType  string
 }
+
+type ToDoQuestion struct {
+	gorm.Model
+	Theme    string
+	CodeNums string
+	Sort     int
+	Master   bool
+}

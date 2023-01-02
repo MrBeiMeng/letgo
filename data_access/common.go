@@ -9,6 +9,8 @@ type ProblemsMapperI interface {
 	GetByCodeNumInDB(codeNum int) models.QuestionInfo
 	InitInsertQuestionStatus(num int)
 	OperationLog(summary, msg, opType string)
+	GetTodos() []models.ToDoQuestion
+	CountDone(codeNums []string) int
 }
 
 var ProblemsMapper ProblemsMapperI = ProblemsMapperImpl{}

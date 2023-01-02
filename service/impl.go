@@ -52,6 +52,50 @@ func getQuestions() (questionsMap map[int]type_def.Question, questionsList []typ
 type CodeServiceImpl struct {
 }
 
+func (c CodeServiceImpl) GetToDos() (resultList []type_def.ToDoQuestion) {
+	for _, modelToDoQuestion := range data_access.ProblemsMapper.GetTodos() {
+		modelToDoQuestion.CodeNums = strings.TrimSpace(modelToDoQuestion.CodeNums)
+		codeNums := strings.Split(modelToDoQuestion.CodeNums, ",")
+		allNum := len(codeNums)
+		// 查询做完了的数量
+		countDone := data_access.ProblemsMapper.CountDone(codeNums)
+		// 装配
+		toDoQuestion := convModel(modelToDoQuestion, countDone, allNum)
+
+		resultList = append(resultList, toDoQuestion)
+	}
+
+	return
+}
+
+func convModel(modelToDoQuestion models.ToDoQuestion, countDone int, allNum int) type_def.ToDoQuestion {
+	toDoQuestion := type_def.ToDoQuestion{}
+	toDoQuestion.Theme = modelToDoQuestion.Theme
+	toDoQuestion.CodeNums = modelToDoQuestion.CodeNums
+	toDoQuestion.Progress = getProgressStr(countDone, allNum)
+	toDoQuestion.Master = modelToDoQuestion.Master
+	return toDoQuestion
+}
+
+func getProgressStr(a, b int) string {
+	fa := float64(a)
+	fb := float64(b)
+
+	progress := fa / fb
+	progressStr := fmt.Sprintf("[%d/%d]", a, b)
+	if progress >= 0.5 {
+		progressStr = utils.GetColorBlue(progressStr)
+	}
+	if progress >= 0.7 {
+		progressStr = utils.GetColorYellow(progressStr)
+	}
+	if progress >= 1 {
+		progressStr = utils.GetColorGreen(progressStr)
+	}
+
+	return progressStr
+}
+
 func (c CodeServiceImpl) OperateLog(summary, msg, opType string) {
 	data_access.ProblemsMapper.OperationLog(summary, msg, opType)
 }
