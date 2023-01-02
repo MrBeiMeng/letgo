@@ -110,14 +110,7 @@ func runWithStrSlice(runFunc interface{}, argsStrSlice []string) {
 	for i := 0; i < t.NumIn(); i++ {
 		switch t.In(i).Kind() {
 		case reflect.Slice:
-			sliceKind := t.In(i).Elem().Kind()
-			switch sliceKind {
-			case reflect.Int:
-				nums := code_lists.ArgsHandlerV1.GetIntArr(argsStrSlice[i])
-				argsSlice = append(argsSlice, reflect.ValueOf(nums))
-			default:
-				fmt.Printf("slice kind [%d]", sliceKind)
-			}
+			argsSlice = sliceHandler(t, i, argsStrSlice, argsSlice)
 		case reflect.Int:
 			num := code_lists.ArgsHandlerV1.GetInt(argsStrSlice[i])
 			argsSlice = append(argsSlice, reflect.ValueOf(num))
@@ -164,6 +157,25 @@ func runWithStrSlice(runFunc interface{}, argsStrSlice []string) {
 		}
 	}
 	fmt.Printf("%s", str)
+}
+
+func sliceHandler(t reflect.Type, i int, argsStrSlice []string, argsSlice []reflect.Value) []reflect.Value {
+	sliceKind := t.In(i).Elem().Kind()
+	switch sliceKind {
+	case reflect.Int:
+		nums := code_lists.ArgsHandlerV1.GetIntArr(argsStrSlice[i])
+		argsSlice = append(argsSlice, reflect.ValueOf(nums))
+	case reflect.Slice:
+		sliceKind2 := t.In(i).Elem().Elem().Kind()
+		switch sliceKind2 {
+		case reflect.Int:
+			nums := code_lists.ArgsHandlerV1.GetIntMatrix(argsStrSlice[i])
+			argsSlice = append(argsSlice, reflect.ValueOf(nums))
+		}
+	default:
+		fmt.Printf("slice kind [%d]", sliceKind)
+	}
+	return argsSlice
 }
 
 func (c CodeServiceImpl) Search(queryWrapper type_def.CodeQueryWrapper) (resultList type_def.Questions) {

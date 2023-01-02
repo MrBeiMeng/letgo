@@ -97,6 +97,17 @@ func (a ArgsHandler) GetIntArr(s string) []int {
 	return nums
 }
 
+// GetIntMatrix 获取2x2矩阵
+func (a ArgsHandler) GetIntMatrix(s string) [][]int {
+
+	matrix := make([][]int, 0)
+	for _, arrStr := range strings.Split(s, "],[") {
+		matrix = append(matrix, a.GetIntArr(arrStr))
+	}
+
+	return matrix
+}
+
 func (a ArgsHandler) GetInt(s string) int {
 	num, _ := strconv.Atoi(s)
 

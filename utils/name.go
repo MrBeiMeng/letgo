@@ -83,16 +83,16 @@ func RoughSplit(s string) (result []string) {
 	// [1,2,3],4,5,[6,7],8,[9],[10]
 
 	str := ""
-	splitFlag := true
+	splitFlag := 0
 	for _, char := range s {
 		if char == '[' {
-			splitFlag = false
+			splitFlag += 1
 		}
 
-		if !splitFlag {
+		if splitFlag != 0 {
 			str = fmt.Sprintf("%s%c", str, char)
 			if char == ']' {
-				splitFlag = true
+				splitFlag -= 1
 			}
 			continue
 		}
