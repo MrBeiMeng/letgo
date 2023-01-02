@@ -13,10 +13,44 @@ import (
 	"time"
 )
 
-var QuestionsMap map[int]type_def.Question = make(map[int]type_def.Question)
-var QuestionsList []type_def.Question
+//
+//var QuestionsMap map[int]type_def.Question = make(map[int]type_def.Question)
+//var QuestionsList []type_def.Question
+//
+//func init() {
+//
+//	// 注册题目
+//	for _, solution := range code_lists.QuestionSolutionsV1 {
+//		question := data_access.ProblemsMapper.GetByCodeNum(solution.CodeNum)
+//
+//		var questionValue type_def.Question
+//
+//		questionValue.Questions = question
+//		questionValue.Url = "https://leetcode.cn/problems/" + question.TitleSlug
+//		for _, topTag := range questionValue.TopicTags {
+//			questionValue.Tags = append(questionValue.Tags, topTag.NameTranslated)
+//		}
+//
+//		for _, topCompanyTag := range questionValue.TopCompanyTags {
+//			questionValue.TopUsedCompanies = append(questionValue.TopUsedCompanies, topCompanyTag.Slug)
+//		}
+//		codeNum, _ := strconv.Atoi(questionValue.FrontendQuestionId)
+//		questionValue.RunFunc = solution.RunFunc
+//		for _, test := range solution.Tests {
+//			questionValue.Tests = append(questionValue.Tests, test)
+//		}
+//		questionValue.CodeNum = codeNum
+//		QuestionsMap[codeNum] = questionValue
+//		QuestionsList = append(QuestionsList, questionValue)
+//	}
+//}
 
-func init() {
+// getQuestions
+//
+//	@Description: 获取保存的 questions 列表
+func getQuestions() (questionsMap map[int]type_def.Question, questionsList []type_def.Question) {
+
+	questionsMap = make(map[int]type_def.Question)
 
 	// 注册题目
 	for _, solution := range code_lists.QuestionSolutionsV1 {
@@ -39,9 +73,12 @@ func init() {
 			questionValue.Tests = append(questionValue.Tests, test)
 		}
 		questionValue.CodeNum = codeNum
-		QuestionsMap[codeNum] = questionValue
-		QuestionsList = append(QuestionsList, questionValue)
+
+		questionsMap[codeNum] = questionValue
+		questionsList = append(questionsList, questionValue)
 	}
+
+	return
 }
 
 type CodeServiceImpl struct {
@@ -70,29 +107,37 @@ func (c CodeServiceImpl) InitTodoCode(num int) {
 
 func (c CodeServiceImpl) Run(codeNum int, argsStr string) {
 	// 获取对应题目
-	codeChallenge, ok := QuestionsMap[codeNum]
-	if !ok {
+	var solution code_lists.QuestionSolution
+
+	foundFlag := false
+	for _, tmpSolution := range code_lists.QuestionSolutionsV1 {
+		if tmpSolution.CodeNum == codeNum {
+			solution = tmpSolution
+			foundFlag = true
+			break
+		}
+	}
+	if !foundFlag {
 		fmt.Printf("查无此题[%d]", codeNum)
-		return
 	}
 
 	// 获取参数列表
 	if !strings.EqualFold(argsStr, "") { // 如无参数，则使用默认测试参数
-		runWithArgsStr(argsStr, codeChallenge)
+		runWithArgsStr(argsStr, solution)
 		return
 	}
 
 	fmt.Printf("| 运行时间\t| %s\n", utils.GetColorGreen(time.Now().Format("2006-01-02 15:04:13")))
 
-	for _, argsStr2 := range codeChallenge.Tests {
-		runWithArgsStr(argsStr2, codeChallenge)
+	for _, argsStr2 := range solution.Tests {
+		runWithArgsStr(argsStr2, solution)
 		fmt.Printf("\n")
 	}
 }
 
-func runWithArgsStr(argsStr string, codeChallenge type_def.Question) {
+func runWithArgsStr(argsStr string, solution code_lists.QuestionSolution) {
 	argsStrSlice := utils.RoughSplit(argsStr)
-	runWithStrSlice(codeChallenge.RunFunc, argsStrSlice)
+	runWithStrSlice(solution.RunFunc, argsStrSlice)
 }
 
 func runWithStrSlice(runFunc interface{}, argsStrSlice []string) {
@@ -184,7 +229,8 @@ func (c CodeServiceImpl) Search(queryWrapper type_def.CodeQueryWrapper) (resultL
 }
 
 func resultFilter(queryWrapper type_def.CodeQueryWrapper, resultList []type_def.Question) []type_def.Question {
-	for _, item := range QuestionsList {
+	_, questionsList := getQuestions()
+	for _, item := range questionsList {
 
 		if !queryWrapper.ShowHidden {
 			if item.Visible == false {
