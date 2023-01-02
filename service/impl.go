@@ -157,7 +157,7 @@ func runWithStrSlice(runFunc interface{}, argsStrSlice []string) {
 		case reflect.Slice:
 			fmt.Printf(" %v\t", cd)
 		case reflect.Pointer:
-			linkedList := cd.Convert(reflect.TypeOf(code_lists.ListNode{}))
+			linkedList := cd.Convert(reflect.TypeOf(&code_lists.ListNode{}))
 			linkedList.MethodByName("Print").Call([]reflect.Value{}) // todo 未测试
 		default:
 			fmt.Printf("return kind | %v", cd.Kind())

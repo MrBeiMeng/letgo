@@ -18,6 +18,7 @@ func init() {
 	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(13, romanToInt, "III", "IV", "IX", "LVIII", "MCMXCIV"))
 	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(383, canConstruct, ""))
 	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(412, fizzBuzz, "3", "5", "15"))
+	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(876, middleNode, "[1,2,3,4,5]", "[1,2,3,4,5,6]"))
 	// enter new code here
 }
 
