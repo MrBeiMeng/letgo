@@ -7,6 +7,9 @@ import (
 	"strings"
 )
 
+// AnyFunc 一个方法
+type AnyFunc interface{}
+
 type CodeQueryWrapper struct {
 	Level      string
 	Star       string

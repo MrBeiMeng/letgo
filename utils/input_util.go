@@ -9,7 +9,7 @@ import (
 
 func GetInput(message string, level int) (string, error) {
 	println(message)
-	print("bl>")
+	print("letgo>")
 	for i := 0; i < level; i++ {
 		print(">")
 	}

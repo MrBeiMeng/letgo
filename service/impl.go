@@ -13,38 +13,6 @@ import (
 	"time"
 )
 
-//
-//var QuestionsMap map[int]type_def.Question = make(map[int]type_def.Question)
-//var QuestionsList []type_def.Question
-//
-//func init() {
-//
-//	// 注册题目
-//	for _, solution := range code_lists.QuestionSolutionsV1 {
-//		question := data_access.ProblemsMapper.GetByCodeNum(solution.CodeNum)
-//
-//		var questionValue type_def.Question
-//
-//		questionValue.Questions = question
-//		questionValue.Url = "https://leetcode.cn/problems/" + question.TitleSlug
-//		for _, topTag := range questionValue.TopicTags {
-//			questionValue.Tags = append(questionValue.Tags, topTag.NameTranslated)
-//		}
-//
-//		for _, topCompanyTag := range questionValue.TopCompanyTags {
-//			questionValue.TopUsedCompanies = append(questionValue.TopUsedCompanies, topCompanyTag.Slug)
-//		}
-//		codeNum, _ := strconv.Atoi(questionValue.FrontendQuestionId)
-//		questionValue.RunFunc = solution.RunFunc
-//		for _, test := range solution.Tests {
-//			questionValue.Tests = append(questionValue.Tests, test)
-//		}
-//		questionValue.CodeNum = codeNum
-//		QuestionsMap[codeNum] = questionValue
-//		QuestionsList = append(QuestionsList, questionValue)
-//	}
-//}
-
 // getQuestions
 //
 //	@Description: 获取保存的 questions 列表
@@ -107,48 +75,97 @@ func (c CodeServiceImpl) InitTodoCode(num int) {
 
 func (c CodeServiceImpl) Run(codeNum int, argsStr string) {
 	// 获取对应题目
-	var solution code_lists.QuestionSolution
-
-	foundFlag := false
-	for _, tmpSolution := range code_lists.QuestionSolutionsV1 {
-		if tmpSolution.CodeNum == codeNum {
-			solution = tmpSolution
-			foundFlag = true
-			break
-		}
-	}
-	if !foundFlag {
+	solution, ok := getSolutionByCodeNum(codeNum)
+	if !ok {
 		fmt.Printf("查无此题[%d]", codeNum)
 	}
 
 	// 获取参数列表
+	argsStrList := make([]string, 0)
 	if !strings.EqualFold(argsStr, "") { // 如无参数，则使用默认测试参数
-		runWithArgsStr(argsStr, solution)
-		return
+		argsStrList = append(argsStrList, argsStr)
+	} else {
+		for _, testArgsStr := range solution.Tests {
+			argsStrList = append(argsStrList, testArgsStr)
+		}
 	}
 
+	// log
 	fmt.Printf("| 运行时间\t| %s\n", utils.GetColorGreen(time.Now().Format("2006-01-02 15:04:13")))
+	t := reflect.TypeOf(solution.RunFunc)
+	fmt.Printf("| 函数类型\t| %s\n", t.String())
 
-	for _, argsStr2 := range solution.Tests {
-		runWithArgsStr(argsStr2, solution)
-		fmt.Printf("\n")
+	for _, tmpStrArgs := range argsStrList {
+		argsStrSlice := utils.RoughSplit(tmpStrArgs)
+
+		calledList, duration := runWithStrSlice(solution.RunFunc, argsStrSlice)
+
+		durationStr := durationFormat(duration)
+
+		fmt.Printf("| %s\t| 参数列表 %s\t| 结果", time.Now().Format("15:04:13"), tmpStrArgs)
+
+		printCalled(calledList)
+
+		fmt.Printf("| 用时%s\n", durationStr)
 	}
 }
 
-func runWithArgsStr(argsStr string, solution code_lists.QuestionSolution) {
-	argsStrSlice := utils.RoughSplit(argsStr)
-	runWithStrSlice(solution.RunFunc, argsStrSlice)
+func printCalled(calledList []reflect.Value) {
+	for _, cd := range calledList {
+		switch cd.Kind() {
+		case reflect.Int:
+			fallthrough
+		case reflect.Bool:
+			fallthrough
+		case reflect.Slice:
+			fmt.Printf(" %v\t", cd)
+		case reflect.Pointer:
+			linkedList := cd.Convert(reflect.TypeOf(&code_lists.ListNode{}))
+			linkedList.MethodByName("Print").Call([]reflect.Value{})
+		default:
+			fmt.Printf("return kind | %v", cd.Kind())
+		}
+	}
 }
 
-func runWithStrSlice(runFunc interface{}, argsStrSlice []string) {
-	fmt.Printf("| 参数列表 \t| %v\t|\n", strings.Join(argsStrSlice, ","))
+func durationFormat(duration time.Duration) string {
+	str := utils.GetColorGreen(fmt.Sprintf("\t[%v]\t", duration))
+	if duration > 300 {
+		str = utils.GetColorYellow(str)
+	}
+
+	if duration > 500 {
+		str = utils.GetColorRed(str)
+	}
+	return str
+}
+
+func getSolutionByCodeNum(codeNum int) (solution code_lists.QuestionSolution, ok bool) {
+	for _, tmpSolution := range code_lists.QuestionSolutionsV1 {
+		if tmpSolution.CodeNum == codeNum {
+			solution = tmpSolution
+			ok = true
+			break
+		}
+	}
+	return
+}
+
+// runWithStrSlice
+//
+//	@Description: 自动解析 argStrSlice 数组,带入至 runFunc 并导出结果和 运行用时
+//	@param runFunc
+//	@param argsStrSlice
+//	@return []reflect.Value 运行结果列表
+//	@return time.Duration 运行用时
+func runWithStrSlice(runFunc interface{}, argsStrSlice []string) ([]reflect.Value, time.Duration) {
 
 	t := reflect.TypeOf(runFunc)
 	v := reflect.ValueOf(runFunc)
 
 	if len(argsStrSlice) != t.NumIn() {
 		println("参数数量错误")
-		return
+		return nil, time.Duration(1)
 	}
 
 	var argsSlice []reflect.Value
@@ -172,36 +189,8 @@ func runWithStrSlice(runFunc interface{}, argsStrSlice []string) {
 
 	startedTime := time.Now()
 	called := v.Call(argsSlice)
-	time.Sleep(time.Millisecond)
-
-	duration := time.Now().Sub(startedTime) - time.Millisecond
-
-	str := utils.GetColorGreen(fmt.Sprintf("\t[%v]\t", duration))
-	if duration > 300 {
-		str = utils.GetColorYellow(str)
-	}
-
-	if duration > 500 {
-		str = utils.GetColorRed(str)
-	}
-
-	fmt.Printf("| return\t|")
-	for _, cd := range called {
-		switch cd.Kind() {
-		case reflect.Int:
-			fallthrough
-		case reflect.Bool:
-			fallthrough
-		case reflect.Slice:
-			fmt.Printf(" %v\t", cd)
-		case reflect.Pointer:
-			linkedList := cd.Convert(reflect.TypeOf(&code_lists.ListNode{}))
-			linkedList.MethodByName("Print").Call([]reflect.Value{}) // todo 未测试
-		default:
-			fmt.Printf("return kind | %v", cd.Kind())
-		}
-	}
-	fmt.Printf("%s", str)
+	time.Sleep(time.Microsecond)
+	return called, time.Now().Sub(startedTime)
 }
 
 func sliceHandler(t reflect.Type, i int, argsStrSlice []string, argsSlice []reflect.Value) []reflect.Value {
