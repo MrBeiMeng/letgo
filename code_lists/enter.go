@@ -21,6 +21,7 @@ func init() {
 	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(876, middleNode, "[1,2,3,4,5]", "[1,2,3,4,5,6]"))
 	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(1342, numberOfSteps, "14", "8", "123"))
 	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(1672, maximumWealth, "[[1,2,3],[3,2,1]]", "[[1,5],[7,3],[3,5]]", "[[2,8,7],[7,1,3],[1,9,5]]"))
+	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(414, thirdMax, "[3,2,1]", "[1,2]", "[2,2,3,1]"))
 	// enter new code here
 }
 
