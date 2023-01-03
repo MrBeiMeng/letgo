@@ -35,7 +35,7 @@ var initCmd = &cobra.Command{
 		golangCodeTemplate := getCodeTemplate(question.TitleSlug)
 
 		if !sure {
-			input, err := utils.GetInput(fmt.Sprintf("确定您想注册{ %d %s %s }吗? [y/n]", codeNum, question.TitleCn, question.Url), 0)
+			input, err := utils.GetInput(fmt.Sprintf("确定您想注册{ %d %s %s %s }吗? [y/n]", codeNum, question.TitleCn, question.Difficulty, question.Url), 0)
 			if err != nil {
 				panic(err)
 			}
