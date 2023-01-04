@@ -64,7 +64,6 @@ func (c CodeServiceImpl) GetToDos() (resultList []type_def.ToDoQuestion) {
 
 		resultList = append(resultList, toDoQuestion)
 	}
-
 	return
 }
 
@@ -82,15 +81,26 @@ func getProgressStr(a, b int) string {
 	fb := float64(b)
 
 	progress := fa / fb
-	progressStr := fmt.Sprintf("[%d/%d]", a, b)
-	if progress >= 0.5 {
-		progressStr = utils.GetColorBlue(progressStr)
-	}
-	if progress >= 0.7 {
-		progressStr = utils.GetColorYellow(progressStr)
-	}
+	progressStr := formatProgress(a, b, progress)
+
+	return progressStr
+}
+
+func formatProgress(a int, b int, progress float64) (progressStr string) {
+	progressStr = fmt.Sprintf("[%d/%d]\t", a, b)
 	if progress >= 1 {
 		progressStr = utils.GetColorGreen(progressStr)
+		return
+	}
+
+	if progress >= 0.7 {
+		progressStr = utils.GetColorYellow(progressStr)
+		return
+	}
+
+	if progress >= 0.5 {
+		progressStr = utils.GetColorBlue(progressStr)
+		return
 	}
 
 	return progressStr

@@ -15,13 +15,6 @@ func init() {
 		panic(err)
 	}
 
-	db2, _ := db.DB()
-	db2.Ping()
-	//db2.Close()
-	if err != nil {
-		panic(err)
-	}
-
 	MysqlDB = db
 }
 
