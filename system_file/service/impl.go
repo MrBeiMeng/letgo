@@ -3,10 +3,10 @@ package service
 import (
 	"fmt"
 	"letgo_repo/code_lists"
-	data_access "letgo_repo/letgo_file/data_access"
-	"letgo_repo/letgo_file/data_access/models"
-	"letgo_repo/letgo_file/service/type_def"
-	utils "letgo_repo/letgo_file/utils"
+	data_access "letgo_repo/system_file/data_access"
+	"letgo_repo/system_file/data_access/models"
+	"letgo_repo/system_file/service/type_def"
+	utils "letgo_repo/system_file/utils"
 	"reflect"
 	"strconv"
 	"strings"
@@ -157,7 +157,7 @@ func (c CodeServiceImpl) Run(codeNum int, argsStr string, saveAll bool, rightAns
 			verifyAnswer(tmpAnswer, tmpServiceArg)
 		}
 
-		if !tmpServiceArg.Saved || saveAll {
+		if (!tmpServiceArg.Saved && tmpServiceArg.RightAnswer != "") || saveAll {
 
 			rightAnswer := tmpAnswer
 			if tmpServiceArg.RightAnswer != "" {

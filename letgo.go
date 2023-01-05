@@ -1,7 +1,7 @@
 package main
 
 import (
-	"letgo_repo/letgo_file/cmd"
+	"letgo_repo/system_file/cmd"
 )
 
 func main() {

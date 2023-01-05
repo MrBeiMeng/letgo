@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"gorm.io/gorm/clause"
-	"letgo_repo/letgo_file/data_access"
-	"letgo_repo/letgo_file/data_access/models"
-	"letgo_repo/letgo_file/generate"
-	utils2 "letgo_repo/letgo_file/utils"
+	"letgo_repo/system_file/data_access"
+	"letgo_repo/system_file/data_access/models"
+	"letgo_repo/system_file/generate"
+	utils2 "letgo_repo/system_file/utils"
 	"time"
 )
 

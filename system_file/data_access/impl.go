@@ -3,8 +3,8 @@ package data_access
 import (
 	"fmt"
 	"gorm.io/gorm/clause"
-	"letgo_repo/letgo_file/data_access/models"
-	"letgo_repo/letgo_file/utils/enum"
+	"letgo_repo/system_file/data_access/models"
+	"letgo_repo/system_file/utils/enum"
 )
 
 type ProblemsMapperImpl struct {

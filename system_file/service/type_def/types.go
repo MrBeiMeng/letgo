@@ -3,7 +3,7 @@ package type_def
 import (
 	"fmt"
 	"github.com/liushuochen/gotable"
-	"letgo_repo/letgo_file/data_access/models"
+	"letgo_repo/system_file/data_access/models"
 	"strings"
 )
 

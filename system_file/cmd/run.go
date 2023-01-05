@@ -3,7 +3,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"letgo_repo/letgo_file/service"
+	"letgo_repo/system_file/service"
 	"strconv"
 )
 

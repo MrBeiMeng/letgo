@@ -1,7 +1,7 @@
 package service
 
 import (
-	"letgo_repo/letgo_file/service/type_def"
+	"letgo_repo/system_file/service/type_def"
 )
 
 type CodeServiceI interface {

@@ -2,9 +2,9 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"letgo_repo/letgo_file/service"
-	"letgo_repo/letgo_file/service/type_def"
-	"letgo_repo/letgo_file/utils"
+	"letgo_repo/system_file/service"
+	"letgo_repo/system_file/service/type_def"
+	"letgo_repo/system_file/utils"
 )
 
 /*
