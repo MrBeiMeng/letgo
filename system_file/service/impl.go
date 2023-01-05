@@ -235,6 +235,7 @@ func verifyAnswer(tmpAnswer string, tmpServiceArg type_def.QuestionTest) {
 
 func getArgs(codeNum int, argsStr string, rightAnswer []string, solution code_lists.QuestionSolution) []type_def.QuestionTest {
 	serviceArgsList := make([]type_def.QuestionTest, 0)
+	tests := data_access.ProblemsMapper.GetTests(fmt.Sprintf("%d", codeNum))
 	if !strings.EqualFold(argsStr, "") { // 如无参数，则使用默认测试参数
 		test := type_def.QuestionTest{Args: argsStr, FrontendQuestionId: fmt.Sprintf("%d", codeNum)}
 		if len(rightAnswer) > 0 {
@@ -246,9 +247,11 @@ func getArgs(codeNum int, argsStr string, rightAnswer []string, solution code_li
 		for _, testArgsStr := range solution.Tests {
 			serviceArgsList = append(serviceArgsList, type_def.QuestionTest{Args: testArgsStr, FrontendQuestionId: fmt.Sprintf("%d", solution.CodeNum)})
 		}
+		for _, modelQuestionTest := range tests {
+			serviceArgsList = append(serviceArgsList, type_def.QuestionTest{Args: modelQuestionTest.Args, FrontendQuestionId: fmt.Sprintf("%d", solution.CodeNum)})
+		}
 	}
 
-	tests := data_access.ProblemsMapper.GetTests(fmt.Sprintf("%d", codeNum))
 	modelTestMap := make(map[string]models.QuestionTest)
 	for _, testObj := range tests {
 		modelTestMap[testObj.Args] = testObj
