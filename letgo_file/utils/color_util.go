@@ -3,27 +3,27 @@ package utils
 import "fmt"
 
 func GetColorYellow(inject string) string {
-	return fmt.Sprintf("\033[1;33m%s\u001B[0m\t", inject)
+	return fmt.Sprintf("\033[1;33m%s\u001B[0m", inject)
 }
 
 func GetColorWhite(inject string) string {
-	return fmt.Sprintf("\033[1;37m%s\u001B[0m\t", inject)
+	return fmt.Sprintf("\033[1;37m%s\u001B[0m", inject)
 }
 
 func GetColorGreen(inject string) string {
-	return fmt.Sprintf("\033[1;32m%s\u001B[0m\t", inject)
+	return fmt.Sprintf("\033[1;32m%s\u001B[0m", inject)
 }
 
 func GetColorBlue(inject string) string {
-	return fmt.Sprintf("\033[1;34m%s\u001B[0m\t", inject)
+	return fmt.Sprintf("\033[1;34m%s\u001B[0m", inject)
 }
 
 func GetColorPurple(inject string) string {
-	return fmt.Sprintf("\033[1;35m%s\u001B[0m\t", inject)
+	return fmt.Sprintf("\033[1;35m%s\u001B[0m", inject)
 }
 
 func GetColorRed(inject string) string {
-	return fmt.Sprintf("\033[1;31m%s\u001B[0m\t", inject)
+	return fmt.Sprintf("\033[1;31m%s\u001B[0m", inject)
 }
 
 func GetEasy() string {

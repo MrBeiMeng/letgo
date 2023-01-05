@@ -127,30 +127,23 @@ func (c CodeServiceImpl) InitTodoCode(num int) {
 	data_access.ProblemsMapper.InitInsertQuestionStatus(num)
 }
 
-func (c CodeServiceImpl) Run(codeNum int, argsStr string, rightAnswer ...string) {
+func (c CodeServiceImpl) Run(codeNum int, argsStr string, saveAll bool, rightAnswers ...string) {
 	// 获取对应题目
 	solution, ok := getSolutionByCodeNum(codeNum)
 	if !ok {
 		fmt.Printf("查无此题[%d]", codeNum)
 	}
 
-	// 获取参数列表
-	argsStrList := make([]string, 0)
-	if !strings.EqualFold(argsStr, "") { // 如无参数，则使用默认测试参数
-		argsStrList = append(argsStrList, argsStr)
-	} else {
-		for _, testArgsStr := range solution.Tests {
-			argsStrList = append(argsStrList, testArgsStr)
-		}
-	}
+	// 获取参数列表 - 新传入的 或 保存在数据库的
+	serviceArgsList := getArgs(codeNum, argsStr, rightAnswers, solution)
 
 	// log
 	fmt.Printf("| 运行时间\t| %s\n", utils.GetColorGreen(time.Now().Format("2006-01-02 15:04:13")))
 	t := reflect.TypeOf(solution.RunFunc)
 	fmt.Printf("| 函数类型\t| %s\n", t.String())
 
-	for _, tmpStrArgs := range argsStrList { //运行并打印日志
-		argsStrSlice := utils.RoughSplit(tmpStrArgs)
+	for _, tmpServiceArg := range serviceArgsList { //运行并打印日志
+		argsStrSlice := utils.RoughSplit(tmpServiceArg.Args)
 
 		calledList, duration := runWithStrSlice(solution.RunFunc, argsStrSlice)
 
@@ -160,38 +153,98 @@ func (c CodeServiceImpl) Run(codeNum int, argsStr string, rightAnswer ...string)
 
 		savingFlag := false
 
-		if len(rightAnswer) > 0 {
-			if strings.EqualFold(strings.TrimSpace(tmpAnswer), strings.TrimSpace(rightAnswer[0])) {
-				fmt.Printf(" %v\b\b\b\b\b", utils.GetColorGreen("●"))
-			} else {
-				fmt.Printf(" %v\b\b\b\b\b", utils.GetColorRed("▼"))
-			}
-
-			go func() {
-				err := data_access.ProblemsMapper.SaveAnswer(codeNum, tmpStrArgs, rightAnswer[0])
-				if err != nil {
-					println(err.Error())
-				}
-				savingFlag = true
-			}()
+		if tmpServiceArg.RightAnswer != "" {
+			verifyAnswer(tmpAnswer, tmpServiceArg)
 		}
 
-		fmt.Printf("| %s\t| 参数列表 %s\t| 结果 %s\t| 用时%s\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", time.Now().Format("15:04:13"), tmpStrArgs, tmpAnswer, durationStr)
+		if !tmpServiceArg.Saved || saveAll {
+
+			rightAnswer := tmpAnswer
+			if tmpServiceArg.RightAnswer != "" {
+				rightAnswer = tmpServiceArg.RightAnswer
+			}
+			savingFlag = goSaveTest(codeNum, &savingFlag, tmpServiceArg.Args, rightAnswer) // 协程保存
+		}
+
+		fmt.Printf("| %s\t| 参数列表 %s\t| 结果 %s\t| 用时 %s", time.Now().Format("15:04:13"), tmpServiceArg.Args, tmpAnswer, durationStr)
 
 		printNum := 0
-		for !savingFlag {
-			if printNum < 3 {
-				fmt.Printf(".")
-				printNum++
-			} else {
-				fmt.Printf("\b")
-				printNum--
-			}
-			time.Sleep(time.Millisecond * 100)
-		}
-		println("saved")
+		waitSaving(&savingFlag, &printNum)
+		println()
 	}
 
+}
+
+func goSaveTest(codeNum int, savingFlag *bool, arg, rightAnswer string) bool {
+	*savingFlag = true
+	go func() {
+		err := data_access.ProblemsMapper.SaveOrUpdateTest(codeNum, arg, rightAnswer)
+		if err != nil {
+			println(err.Error())
+		}
+		*savingFlag = false
+		print("saved")
+	}()
+	return *savingFlag
+}
+
+func waitSaving(savingFlag *bool, printNum *int) {
+	print("\t")
+	for *savingFlag {
+		if *printNum < 3 {
+			fmt.Printf(".")
+			*printNum++
+		} else {
+			fmt.Printf("\b")
+			*printNum--
+		}
+		time.Sleep(time.Millisecond * 100)
+	}
+}
+
+func verifyAnswer(tmpAnswer string, tmpServiceArg type_def.QuestionTest) {
+	if strings.EqualFold(strings.TrimSpace(tmpAnswer), strings.TrimSpace(tmpServiceArg.RightAnswer)) {
+		fmt.Printf(" %v ", utils.GetColorGreen("●"))
+	} else {
+		fmt.Printf(" %v ", utils.GetColorRed("▼"))
+	}
+
+	return
+}
+
+func getArgs(codeNum int, argsStr string, rightAnswer []string, solution code_lists.QuestionSolution) []type_def.QuestionTest {
+	serviceArgsList := make([]type_def.QuestionTest, 0)
+	if !strings.EqualFold(argsStr, "") { // 如无参数，则使用默认测试参数
+		test := type_def.QuestionTest{Args: argsStr, FrontendQuestionId: fmt.Sprintf("%d", codeNum)}
+		if len(rightAnswer) > 0 {
+			test.RightAnswer = rightAnswer[0]
+		}
+
+		serviceArgsList = append(serviceArgsList, test)
+	} else {
+		for _, testArgsStr := range solution.Tests {
+			serviceArgsList = append(serviceArgsList, type_def.QuestionTest{Args: testArgsStr, FrontendQuestionId: fmt.Sprintf("%d", solution.CodeNum)})
+		}
+	}
+
+	tests := data_access.ProblemsMapper.GetTests(fmt.Sprintf("%d", codeNum))
+	modelTestMap := make(map[string]models.QuestionTest)
+	for _, testObj := range tests {
+		modelTestMap[testObj.Args] = testObj
+	}
+
+	for i, serviceArg := range serviceArgsList {
+		if serviceArg.RightAnswer != "" {
+			continue
+		}
+
+		if value, ok := modelTestMap[serviceArg.Args]; ok {
+			serviceArgsList[i].Saved = true
+			serviceArgsList[i].RightAnswer = value.RightAnswer
+		}
+	}
+
+	return serviceArgsList
 }
 
 func sprintCalled(calledList []reflect.Value) string {
@@ -202,7 +255,7 @@ func sprintCalled(calledList []reflect.Value) string {
 		case reflect.Bool:
 			fallthrough
 		case reflect.Slice:
-			return fmt.Sprintf(" %v", cd)
+			return fmt.Sprintf("%v", cd)
 		case reflect.Pointer:
 			linkedList := cd.Convert(reflect.TypeOf(&code_lists.ListNode{}))
 			call := linkedList.MethodByName("Sprint").Call([]reflect.Value{})
@@ -237,15 +290,16 @@ func printCalled(calledList []reflect.Value) {
 }
 
 func durationFormat(duration time.Duration) string {
-	str := utils.GetColorGreen(fmt.Sprintf("\t[%v]\t", duration))
-	if duration > 300 {
-		str = utils.GetColorYellow(str)
+	str := fmt.Sprintf("[%v]", duration)
+	if duration > 300*time.Millisecond {
+		return utils.GetColorYellow(str)
 	}
 
-	if duration > 500 {
-		str = utils.GetColorRed(str)
+	if duration > 500*time.Millisecond {
+		return utils.GetColorRed(str)
 	}
-	return str
+
+	return utils.GetColorGreen(str)
 }
 
 func getSolutionByCodeNum(codeNum int) (solution code_lists.QuestionSolution, ok bool) {

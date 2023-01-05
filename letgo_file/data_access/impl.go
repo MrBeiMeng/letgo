@@ -10,7 +10,16 @@ import (
 type ProblemsMapperImpl struct {
 }
 
-func (p ProblemsMapperImpl) SaveAnswer(codeNum int, strArgs string, rightAnswer string) error {
+func (p ProblemsMapperImpl) GetTests(codeNum string) (result []models.QuestionTest) {
+	err := MysqlDB.Where("frontend_question_id = ?", codeNum).Find(&result).Error
+	if err != nil {
+		panic(err)
+	}
+
+	return
+}
+
+func (p ProblemsMapperImpl) SaveOrUpdateTest(codeNum int, strArgs string, rightAnswer string) error {
 	var test models.QuestionTest
 	test.FrontendQuestionId = fmt.Sprintf("%d", codeNum)
 	test.Args = strArgs

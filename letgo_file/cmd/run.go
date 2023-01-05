@@ -21,19 +21,21 @@ var runCmd = &cobra.Command{
 		codeNum, _ := strconv.Atoi(args[0])
 
 		if rightAnswer != "" {
-			service.CodeService.Run(codeNum, userArgs, rightAnswer)
+			service.CodeService.Run(codeNum, userArgs, saveAll, rightAnswer)
 			return
 		}
 
-		service.CodeService.Run(codeNum, userArgs)
+		service.CodeService.Run(codeNum, userArgs, saveAll)
 	},
 }
 
 var userArgs string
 var rightAnswer string
+var saveAll bool
 
 func init() {
 	rootCmd.AddCommand(runCmd)
 	runCmd.Flags().StringVarP(&userArgs, "args", "a", "", "参数列表")
 	runCmd.Flags().StringVarP(&rightAnswer, "rightAnswer", "r", "", "正确结果")
+	runCmd.PersistentFlags().BoolVarP(&saveAll, "saveAll", "s", false, "保存所有结果")
 }

@@ -100,3 +100,10 @@ type CodeTemplate struct {
 	LangSlug string `json:"langSlug"`
 	Code     string `json:"code"`
 }
+
+type QuestionTest struct {
+	FrontendQuestionId string
+	Args               string
+	RightAnswer        string
+	Saved              bool
+}
