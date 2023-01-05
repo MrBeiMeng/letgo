@@ -1,7 +1,7 @@
 package data_access
 
 import (
-	"letgo_repo/data_access/models"
+	"letgo_repo/letgo_file/data_access/models"
 )
 
 type ProblemsMapperI interface {

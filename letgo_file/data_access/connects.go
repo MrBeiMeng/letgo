@@ -3,7 +3,7 @@ package data_access
 import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"letgo_repo/data_access/models"
+	"letgo_repo/letgo_file/data_access/models"
 )
 
 var MysqlDB *gorm.DB

@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"gorm.io/gorm/clause"
-	"letgo_repo/data_access"
-	"letgo_repo/data_access/models"
-	"letgo_repo/generate"
-	"letgo_repo/utils"
+	"letgo_repo/letgo_file/data_access"
+	"letgo_repo/letgo_file/data_access/models"
+	"letgo_repo/letgo_file/generate"
+	utils2 "letgo_repo/letgo_file/utils"
 	"time"
 )
 
@@ -42,14 +42,14 @@ func main() {
 
 	}
 
-	println(utils.GetColorGreen("都已完成"))
+	println(utils2.GetColorGreen("都已完成"))
 
 }
 
 func initQuestionList(cookies string, headerMap map[string]string, skip int) {
 	// 获取列表
 	postBody := "{\"query\":\"\\n    query problemsetQuestionList($categorySlug: String, $limit: Int, $skip: Int, $filters: QuestionListFilterInput) {\\n  problemsetQuestionList(\\n    categorySlug: $categorySlug\\n    limit: $limit\\n    skip: $skip\\n    filters: $filters\\n  ) {\\n    hasMore\\n    total\\n    questions {\\n      acRate\\n      difficulty\\n      freqBar\\n      frontendQuestionId\\n      isFavor\\n      paidOnly\\n      solutionNum\\n      status\\n      title\\n      titleCn\\n      titleSlug\\n      topicTags {\\n        name\\n        nameTranslated\\n        id\\n        slug\\n      }\\n      extra {\\n        hasVideoSolution\\n        topCompanyTags {\\n          imgUrl\\n          slug\\n          numSubscribed\\n        }\\n      }\\n    }\\n  }\\n}\\n    \",\"variables\":{\"categorySlug\":\"\",\"skip\":%d,\"limit\":100,\"filters\":{}}}"
-	questionListBytes := utils.HttpPost(`https://leetcode.cn/graphql/`, cookies, headerMap, fmt.Sprintf(postBody, skip))
+	questionListBytes := utils2.HttpPost(`https://leetcode.cn/graphql/`, cookies, headerMap, fmt.Sprintf(postBody, skip))
 
 	var questionList generate.QuestionList
 	err := json.Unmarshal(questionListBytes, &questionList)
@@ -75,19 +75,19 @@ func SaveData(mQuestion models.Questions) bool {
 
 	err := db.Save(&mQuestion.TopicTags).Error
 	if err != nil {
-		println(utils.GetColorRed(err.Error()))
+		println(utils2.GetColorRed(err.Error()))
 		//return true
 	}
 
 	err = db.Save(&mQuestion.TopCompanyTags).Error
 	if err != nil {
-		println(utils.GetColorRed(err.Error()))
+		println(utils2.GetColorRed(err.Error()))
 		//return true
 	}
 
 	err = db.Omit(clause.Associations).Clauses(clause.OnConflict{UpdateAll: true}).Create(&mQuestion).Error
 	if err != nil {
-		println(utils.GetColorRed(err.Error()))
+		println(utils2.GetColorRed(err.Error()))
 		//return true
 	}
 
@@ -102,7 +102,7 @@ func SaveData(mQuestion models.Questions) bool {
 		insertSql := `replace into questions_topic_tags (questions_id, topic_tags_id) values (?,?);`
 		err = db.Exec(insertSql, &mQuestion.ID, &topicTag.ID).Error
 		if err != nil {
-			println(utils.GetColorRed(err.Error()))
+			println(utils2.GetColorRed(err.Error()))
 			//return true
 		}
 	}
@@ -118,7 +118,7 @@ func SaveData(mQuestion models.Questions) bool {
 		insertSql := `replace into questions_top_company_tags (questions_id, top_company_tags_id) values (?,?);`
 		err = db.Exec(insertSql, &mQuestion.ID, &topCompanyTag.ID).Error
 		if err != nil {
-			println(utils.GetColorRed(err.Error()))
+			println(utils2.GetColorRed(err.Error()))
 			return true
 		}
 	}
@@ -129,26 +129,26 @@ func convToModelQuestion(question generate.Questions) (result models.Questions) 
 	for _, topTag := range question.TopicTags {
 		var mTopTag models.TopicTags
 
-		_ = utils.SimpleCopyProperties(&mTopTag, &topTag)
+		_ = utils2.SimpleCopyProperties(&mTopTag, &topTag)
 		result.TopicTags = append(result.TopicTags, mTopTag)
 	}
 
 	for _, topCompanyTag := range question.Extra.TopCompanyTags {
 		var mTopCompanyTag models.TopCompanyTags
 
-		_ = utils.SimpleCopyProperties(&mTopCompanyTag, &topCompanyTag)
+		_ = utils2.SimpleCopyProperties(&mTopCompanyTag, &topCompanyTag)
 		result.TopCompanyTags = append(result.TopCompanyTags, mTopCompanyTag)
 	}
 
 	result.CompanyTagNum = question.Extra.CompanyTagNum
 	result.HasVideoSolution = question.Extra.HasVideoSolution
 
-	_ = utils.SimpleCopyProperties(&result, &question)
+	_ = utils2.SimpleCopyProperties(&result, &question)
 	return result
 }
 
 func InitQuestionDetail(cookies string, headerMap map[string]string, question models.Questions) []byte {
 	reqBody := "{\"query\":\"\\n    query questionEditorData($titleSlug: String!) {\\n  question(titleSlug: $titleSlug) {\\n    questionId\\n    questionFrontendId\\n    codeSnippets {\\n      lang\\n      langSlug\\n      code\\n    }\\n    envInfo\\n    enableRunCode\\n  }\\n}\\n    \",\"variables\":{\"titleSlug\":\"%s\"}}"
-	questionDetail := utils.HttpPost(`https://leetcode.cn/graphql/`, cookies, headerMap, fmt.Sprintf(reqBody, question.TitleSlug))
+	questionDetail := utils2.HttpPost(`https://leetcode.cn/graphql/`, cookies, headerMap, fmt.Sprintf(reqBody, question.TitleSlug))
 	return questionDetail
 }

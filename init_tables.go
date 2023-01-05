@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"letgo_repo/data_access"
-	"letgo_repo/utils"
+	"letgo_repo/letgo_file/data_access"
+	"letgo_repo/letgo_file/utils"
 )
 
 func main() {

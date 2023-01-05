@@ -1,8 +1,8 @@
 package data_access
 
 import (
-	"letgo_repo/data_access/models"
-	"letgo_repo/utils/enum"
+	"letgo_repo/letgo_file/data_access/models"
+	"letgo_repo/letgo_file/utils/enum"
 )
 
 type ProblemsMapperImpl struct {

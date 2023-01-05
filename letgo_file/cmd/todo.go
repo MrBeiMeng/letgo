@@ -4,8 +4,8 @@ package cmd
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"letgo_repo/service"
-	"letgo_repo/utils"
+	"letgo_repo/letgo_file/service"
+	"letgo_repo/letgo_file/utils"
 )
 
 var todoCmd = &cobra.Command{
