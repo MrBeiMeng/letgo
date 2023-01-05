@@ -69,7 +69,7 @@ func (c CodeServiceImpl) GetToDos() (resultList []type_def.ToDoQuestion) {
 }
 
 func formatCodeNum(codeNums []string) string {
-	resultStr := ""
+	resultStrList := make([]string, 0)
 	for _, codeNum := range codeNums {
 		question := data_access.ProblemsMapper.GetByCodeNumInDB(codeNum)
 		color := utils.GetColorCyan("·")
@@ -82,10 +82,10 @@ func formatCodeNum(codeNums []string) string {
 			color = utils.GetColorPurple("·")
 		}
 
-		resultStr += fmt.Sprintf("%s%s%s", utils.GetColorDefault(codeNum), color, utils.GetColorDefault(","))
+		resultStrList = append(resultStrList, fmt.Sprintf("%s%s", codeNum, color))
 	}
 
-	return resultStr + "\b"
+	return strings.Join(resultStrList, ",")
 }
 
 func convModel(modelToDoQuestion models.ToDoQuestion, countDone int, allNum int) type_def.ToDoQuestion {
