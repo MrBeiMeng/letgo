@@ -25,6 +25,7 @@ func init() {
 	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(628, maximumProduct, "[1,2,3]", "[1,2,3,4]", "[-1,-2,-3]", "[-100,-98,-1,2,3,4]"))
 	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(645, findErrorNums, "[1,2,3,4,5,2]"))
 	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(697, findShortestSubArray))
+	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(448, findDisappearedNumbers))
 	// enter new code here
 }
 
