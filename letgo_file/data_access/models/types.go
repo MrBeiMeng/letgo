@@ -80,3 +80,10 @@ type ToDoQuestion struct {
 	Sort     int
 	Master   bool
 }
+
+type QuestionTest struct {
+	gorm.Model
+	FrontendQuestionId string `gorm:"index:idx_name,unique"`
+	Args               string `gorm:"index:idx_name,unique"`
+	RightAnswer        string
+}

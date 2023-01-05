@@ -18,8 +18,12 @@ func GetColorBlue(inject string) string {
 	return fmt.Sprintf("\033[1;34m%s\u001B[0m\t", inject)
 }
 
-func GetColorRed(inject string) string {
+func GetColorPurple(inject string) string {
 	return fmt.Sprintf("\033[1;35m%s\u001B[0m\t", inject)
+}
+
+func GetColorRed(inject string) string {
+	return fmt.Sprintf("\033[1;31m%s\u001B[0m\t", inject)
 }
 
 func GetEasy() string {

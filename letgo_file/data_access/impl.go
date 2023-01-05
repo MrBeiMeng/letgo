@@ -1,11 +1,25 @@
 package data_access
 
 import (
+	"fmt"
+	"gorm.io/gorm/clause"
 	"letgo_repo/letgo_file/data_access/models"
 	"letgo_repo/letgo_file/utils/enum"
 )
 
 type ProblemsMapperImpl struct {
+}
+
+func (p ProblemsMapperImpl) SaveAnswer(codeNum int, strArgs string, rightAnswer string) error {
+	var test models.QuestionTest
+	test.FrontendQuestionId = fmt.Sprintf("%d", codeNum)
+	test.Args = strArgs
+	test.RightAnswer = rightAnswer
+
+	err := MysqlDB.Clauses(clause.OnConflict{
+		UpdateAll: true,
+	}).Create(&test).Error
+	return err
 }
 
 func (p ProblemsMapperImpl) CountDone(codeNums []string) (num int) {

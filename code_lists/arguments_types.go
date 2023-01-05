@@ -16,6 +16,10 @@ type ListNode struct {
 }
 
 func (l *ListNode) Print() {
+	println(l.Sprint())
+}
+
+func (l *ListNode) Sprint() string {
 	tmpNode := l
 	answerNums := make([]string, 0)
 	for tmpNode != nil {
@@ -24,7 +28,7 @@ func (l *ListNode) Print() {
 	}
 
 	pStr := strings.Join(answerNums, ",")
-	fmt.Printf("[%s]\t", pStr)
+	return fmt.Sprintf("[%s]\t", pStr)
 }
 
 // 获取字符串

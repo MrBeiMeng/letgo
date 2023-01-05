@@ -11,6 +11,7 @@ type ProblemsMapperI interface {
 	OperationLog(summary, msg, opType string)
 	GetTodos() []models.ToDoQuestion
 	CountDone(codeNums []string) int
+	SaveAnswer(codeNum int, strArgs string, rightAnswer string) error
 }
 
 var ProblemsMapper ProblemsMapperI = ProblemsMapperImpl{}

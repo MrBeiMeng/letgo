@@ -20,13 +20,20 @@ var runCmd = &cobra.Command{
 
 		codeNum, _ := strconv.Atoi(args[0])
 
+		if rightAnswer != "" {
+			service.CodeService.Run(codeNum, userArgs, rightAnswer)
+			return
+		}
+
 		service.CodeService.Run(codeNum, userArgs)
 	},
 }
 
 var userArgs string
+var rightAnswer string
 
 func init() {
 	rootCmd.AddCommand(runCmd)
 	runCmd.Flags().StringVarP(&userArgs, "args", "a", "", "参数列表")
+	runCmd.Flags().StringVarP(&rightAnswer, "rightAnswer", "r", "", "正确结果")
 }

@@ -3,10 +3,10 @@ package service
 import (
 	"fmt"
 	"letgo_repo/code_lists"
-	data_access2 "letgo_repo/letgo_file/data_access"
+	data_access "letgo_repo/letgo_file/data_access"
 	"letgo_repo/letgo_file/data_access/models"
 	"letgo_repo/letgo_file/service/type_def"
-	utils2 "letgo_repo/letgo_file/utils"
+	utils "letgo_repo/letgo_file/utils"
 	"reflect"
 	"strconv"
 	"strings"
@@ -22,7 +22,7 @@ func getQuestions() (questionsMap map[int]type_def.Question, questionsList []typ
 
 	// 注册题目
 	for _, solution := range code_lists.QuestionSolutionsV1 {
-		question := data_access2.ProblemsMapper.GetByCodeNum(solution.CodeNum)
+		question := data_access.ProblemsMapper.GetByCodeNum(solution.CodeNum)
 
 		var questionValue type_def.Question
 
@@ -53,12 +53,12 @@ type CodeServiceImpl struct {
 }
 
 func (c CodeServiceImpl) GetToDos() (resultList []type_def.ToDoQuestion) {
-	for _, modelToDoQuestion := range data_access2.ProblemsMapper.GetTodos() {
+	for _, modelToDoQuestion := range data_access.ProblemsMapper.GetTodos() {
 		modelToDoQuestion.CodeNums = strings.TrimSpace(modelToDoQuestion.CodeNums)
 		codeNums := strings.Split(modelToDoQuestion.CodeNums, ",")
 		allNum := len(codeNums)
 		// 查询做完了的数量
-		countDone := data_access2.ProblemsMapper.CountDone(codeNums)
+		countDone := data_access.ProblemsMapper.CountDone(codeNums)
 		// 装配
 		toDoQuestion := convModel(modelToDoQuestion, countDone, allNum)
 
@@ -89,17 +89,17 @@ func getProgressStr(a, b int) string {
 func formatProgress(a int, b int, progress float64) (progressStr string) {
 	progressStr = fmt.Sprintf("[%d/%d]\t", a, b)
 	if progress >= 1 {
-		progressStr = utils2.GetColorGreen(progressStr)
+		progressStr = utils.GetColorGreen(progressStr)
 		return
 	}
 
 	if progress >= 0.7 {
-		progressStr = utils2.GetColorYellow(progressStr)
+		progressStr = utils.GetColorYellow(progressStr)
 		return
 	}
 
 	if progress >= 0.5 {
-		progressStr = utils2.GetColorBlue(progressStr)
+		progressStr = utils.GetColorBlue(progressStr)
 		return
 	}
 
@@ -107,14 +107,14 @@ func formatProgress(a int, b int, progress float64) (progressStr string) {
 }
 
 func (c CodeServiceImpl) OperateLog(summary, msg, opType string) {
-	data_access2.ProblemsMapper.OperationLog(summary, msg, opType)
+	data_access.ProblemsMapper.OperationLog(summary, msg, opType)
 }
 
 func (c CodeServiceImpl) GetByCodeNum(num int) (result type_def.Question) {
 
 	var question models.Questions
 
-	data_access2.MysqlDB.Where("frontend_question_id = ?", num).First(&question)
+	data_access.MysqlDB.Where("frontend_question_id = ?", num).First(&question)
 
 	result.Questions = question
 	result.Url = "https://leetcode.cn/problems/" + question.TitleSlug
@@ -124,10 +124,10 @@ func (c CodeServiceImpl) GetByCodeNum(num int) (result type_def.Question) {
 }
 
 func (c CodeServiceImpl) InitTodoCode(num int) {
-	data_access2.ProblemsMapper.InitInsertQuestionStatus(num)
+	data_access.ProblemsMapper.InitInsertQuestionStatus(num)
 }
 
-func (c CodeServiceImpl) Run(codeNum int, argsStr string) {
+func (c CodeServiceImpl) Run(codeNum int, argsStr string, rightAnswer ...string) {
 	// 获取对应题目
 	solution, ok := getSolutionByCodeNum(codeNum)
 	if !ok {
@@ -145,23 +145,77 @@ func (c CodeServiceImpl) Run(codeNum int, argsStr string) {
 	}
 
 	// log
-	fmt.Printf("| 运行时间\t| %s\n", utils2.GetColorGreen(time.Now().Format("2006-01-02 15:04:13")))
+	fmt.Printf("| 运行时间\t| %s\n", utils.GetColorGreen(time.Now().Format("2006-01-02 15:04:13")))
 	t := reflect.TypeOf(solution.RunFunc)
 	fmt.Printf("| 函数类型\t| %s\n", t.String())
 
-	for _, tmpStrArgs := range argsStrList {
-		argsStrSlice := utils2.RoughSplit(tmpStrArgs)
+	for _, tmpStrArgs := range argsStrList { //运行并打印日志
+		argsStrSlice := utils.RoughSplit(tmpStrArgs)
 
 		calledList, duration := runWithStrSlice(solution.RunFunc, argsStrSlice)
 
 		durationStr := durationFormat(duration)
 
-		fmt.Printf("| %s\t| 参数列表 %s\t| 结果", time.Now().Format("15:04:13"), tmpStrArgs)
+		tmpAnswer := sprintCalled(calledList)
 
-		printCalled(calledList)
+		savingFlag := false
 
-		fmt.Printf("| 用时%s\n", durationStr)
+		if len(rightAnswer) > 0 {
+			if strings.EqualFold(strings.TrimSpace(tmpAnswer), strings.TrimSpace(rightAnswer[0])) {
+				fmt.Printf(" %v\b\b\b\b\b", utils.GetColorGreen("●"))
+			} else {
+				fmt.Printf(" %v\b\b\b\b\b", utils.GetColorRed("▼"))
+			}
+
+			go func() {
+				err := data_access.ProblemsMapper.SaveAnswer(codeNum, tmpStrArgs, rightAnswer[0])
+				if err != nil {
+					println(err.Error())
+				}
+				savingFlag = true
+			}()
+		}
+
+		fmt.Printf("| %s\t| 参数列表 %s\t| 结果 %s\t| 用时%s\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b", time.Now().Format("15:04:13"), tmpStrArgs, tmpAnswer, durationStr)
+
+		printNum := 0
+		for !savingFlag {
+			if printNum < 3 {
+				fmt.Printf(".")
+				printNum++
+			} else {
+				fmt.Printf("\b")
+				printNum--
+			}
+			time.Sleep(time.Millisecond * 100)
+		}
+		println("saved")
 	}
+
+}
+
+func sprintCalled(calledList []reflect.Value) string {
+	for _, cd := range calledList {
+		switch cd.Kind() {
+		case reflect.Int:
+			fallthrough
+		case reflect.Bool:
+			fallthrough
+		case reflect.Slice:
+			return fmt.Sprintf(" %v", cd)
+		case reflect.Pointer:
+			linkedList := cd.Convert(reflect.TypeOf(&code_lists.ListNode{}))
+			call := linkedList.MethodByName("Sprint").Call([]reflect.Value{})
+			if len(call) < 1 {
+				return "函数异常"
+			}
+			return fmt.Sprintf("%v", call[0])
+		default:
+			return fmt.Sprintf("return kind | %v", cd.Kind())
+		}
+	}
+
+	return ""
 }
 
 func printCalled(calledList []reflect.Value) {
@@ -183,13 +237,13 @@ func printCalled(calledList []reflect.Value) {
 }
 
 func durationFormat(duration time.Duration) string {
-	str := utils2.GetColorGreen(fmt.Sprintf("\t[%v]\t", duration))
+	str := utils.GetColorGreen(fmt.Sprintf("\t[%v]\t", duration))
 	if duration > 300 {
-		str = utils2.GetColorYellow(str)
+		str = utils.GetColorYellow(str)
 	}
 
 	if duration > 500 {
-		str = utils2.GetColorRed(str)
+		str = utils.GetColorRed(str)
 	}
 	return str
 }
@@ -236,7 +290,7 @@ func runWithStrSlice(runFunc interface{}, argsStrSlice []string) ([]reflect.Valu
 		case reflect.String:
 			argsSlice = append(argsSlice, reflect.ValueOf(argsStrSlice[i]))
 		default:
-			fmt.Printf(utils2.GetColorRed("other kind [%d]\n"), t.In(i).Kind())
+			fmt.Printf(utils.GetColorRed("other kind [%d]\n"), t.In(i).Kind())
 			panic("stopped")
 		}
 	}
