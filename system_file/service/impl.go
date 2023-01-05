@@ -61,10 +61,28 @@ func (c CodeServiceImpl) GetToDos() (resultList []type_def.ToDoQuestion) {
 		countDone := data_access.ProblemsMapper.CountDone(codeNums)
 		// 装配
 		toDoQuestion := convModel(modelToDoQuestion, countDone, allNum)
+		//toDoQuestion.CodeNums = formatCodeNum(codeNums)
 
 		resultList = append(resultList, toDoQuestion)
 	}
 	return
+}
+
+func formatCodeNum(codeNums []string) string {
+	resultStrList := make([]string, 0)
+	for _, codeNum := range codeNums {
+		question := data_access.ProblemsMapper.GetByCodeNumInDB(codeNum)
+		switch question.Difficulty {
+		case "EASY":
+			resultStrList = append(resultStrList, utils.GetColorCyan(codeNum))
+		case "MEDIUM":
+			resultStrList = append(resultStrList, utils.GetColorYellow(codeNum))
+		case "HARD":
+			resultStrList = append(resultStrList, utils.GetColorPurple(codeNum))
+		}
+	}
+
+	return strings.Join(resultStrList, ",")
 }
 
 func convModel(modelToDoQuestion models.ToDoQuestion, countDone int, allNum int) type_def.ToDoQuestion {
@@ -87,7 +105,7 @@ func getProgressStr(a, b int) string {
 }
 
 func formatProgress(a int, b int, progress float64) (progressStr string) {
-	progressStr = fmt.Sprintf("[%d/%d]\t", a, b)
+	progressStr = fmt.Sprintf("[%d/%d]", a, b)
 	if progress >= 1 {
 		progressStr = utils.GetColorGreen(progressStr)
 		return
@@ -103,7 +121,7 @@ func formatProgress(a int, b int, progress float64) (progressStr string) {
 		return
 	}
 
-	return progressStr
+	return utils.GetColorDefault(progressStr)
 }
 
 func (c CodeServiceImpl) OperateLog(summary, msg, opType string) {

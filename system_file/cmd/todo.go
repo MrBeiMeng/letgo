@@ -19,7 +19,7 @@ var todoCmd = &cobra.Command{
 		for _, toDoQuestion := range service.CodeService.GetToDos() {
 
 			if toDoQuestion.Master {
-				table = append(table, []string{fmt.Sprintf("< %s >", toDoQuestion.Theme), "——", toDoQuestion.Progress})
+				table = append(table, []string{fmt.Sprintf("\b\b  \n\n| < %s >", toDoQuestion.Theme), "*************", toDoQuestion.Progress})
 				continue
 			}
 

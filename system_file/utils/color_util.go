@@ -2,16 +2,16 @@ package utils
 
 import "fmt"
 
-func GetColorYellow(inject string) string {
-	return fmt.Sprintf("\033[1;33m%s\u001B[0m", inject)
-}
-
-func GetColorWhite(inject string) string {
-	return fmt.Sprintf("\033[1;37m%s\u001B[0m", inject)
+func GetColorDefault(inject string) string {
+	return fmt.Sprintf("\033[1;0m%s\u001B[0m", inject)
 }
 
 func GetColorGreen(inject string) string {
 	return fmt.Sprintf("\033[1;32m%s\u001B[0m", inject)
+}
+
+func GetColorYellow(inject string) string {
+	return fmt.Sprintf("\033[1;33m%s\u001B[0m", inject)
 }
 
 func GetColorBlue(inject string) string {
@@ -20,6 +20,14 @@ func GetColorBlue(inject string) string {
 
 func GetColorPurple(inject string) string {
 	return fmt.Sprintf("\033[1;35m%s\u001B[0m", inject)
+}
+
+func GetColorCyan(inject string) string {
+	return fmt.Sprintf("\033[1;36m%s\u001B[0m", inject)
+}
+
+func GetColorWhite(inject string) string {
+	return fmt.Sprintf("\033[1;37m%s\u001B[0m", inject)
 }
 
 func GetColorRed(inject string) string {

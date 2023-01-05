@@ -6,7 +6,7 @@ import (
 
 type ProblemsMapperI interface {
 	GetByCodeNum(codeNum int) (question models.Questions)
-	GetByCodeNumInDB(codeNum int) models.QuestionInfo
+	GetByCodeNumInDB(codeNum string) models.Questions
 	InitInsertQuestionStatus(num int)
 	OperationLog(summary, msg, opType string)
 	GetTodos() []models.ToDoQuestion
