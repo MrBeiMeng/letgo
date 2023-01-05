@@ -61,7 +61,7 @@ func (c CodeServiceImpl) GetToDos() (resultList []type_def.ToDoQuestion) {
 		countDone := data_access.ProblemsMapper.CountDone(codeNums)
 		// 装配
 		toDoQuestion := convModel(modelToDoQuestion, countDone, allNum)
-		//toDoQuestion.CodeNums = formatCodeNum(codeNums)
+		toDoQuestion.CodeNums = formatCodeNum(codeNums)
 
 		resultList = append(resultList, toDoQuestion)
 	}
@@ -69,20 +69,23 @@ func (c CodeServiceImpl) GetToDos() (resultList []type_def.ToDoQuestion) {
 }
 
 func formatCodeNum(codeNums []string) string {
-	resultStrList := make([]string, 0)
+	resultStr := ""
 	for _, codeNum := range codeNums {
 		question := data_access.ProblemsMapper.GetByCodeNumInDB(codeNum)
+		color := utils.GetColorCyan("·")
 		switch question.Difficulty {
 		case "EASY":
-			resultStrList = append(resultStrList, utils.GetColorCyan(codeNum))
+			color = utils.GetColorCyan("·")
 		case "MEDIUM":
-			resultStrList = append(resultStrList, utils.GetColorYellow(codeNum))
+			color = utils.GetColorYellow("·")
 		case "HARD":
-			resultStrList = append(resultStrList, utils.GetColorPurple(codeNum))
+			color = utils.GetColorPurple("·")
 		}
+
+		resultStr += fmt.Sprintf("%s%s%s", utils.GetColorDefault(codeNum), color, utils.GetColorDefault(","))
 	}
 
-	return strings.Join(resultStrList, ",")
+	return resultStr + "\b"
 }
 
 func convModel(modelToDoQuestion models.ToDoQuestion, countDone int, allNum int) type_def.ToDoQuestion {

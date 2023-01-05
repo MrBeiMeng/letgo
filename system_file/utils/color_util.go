@@ -3,7 +3,7 @@ package utils
 import "fmt"
 
 func GetColorDefault(inject string) string {
-	return fmt.Sprintf("\033[1;0m%s\u001B[0m", inject)
+	return fmt.Sprintf("\033[1;00m%s\u001B[0m", inject)
 }
 
 func GetColorGreen(inject string) string {

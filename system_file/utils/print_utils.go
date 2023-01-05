@@ -16,7 +16,7 @@ func TablePrint(strTable [][]string) {
 		return
 	}
 
-	for i := 1; i < len(strTable); i++ {
+	for i := 1; i < 10; i++ {
 		err = table.AddRow(strTable[i])
 		if err != nil {
 			println(err.Error())

@@ -14,20 +14,40 @@ var todoCmd = &cobra.Command{
 	Long:  `展示待做计划`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		table := make([][]string, 0)
-		table = append(table, []string{"主题", "题目列表", "进度"})
-		for _, toDoQuestion := range service.CodeService.GetToDos() {
+		fmt.Printf("主题\t进度\t题目列表\n")
+		todos := service.CodeService.GetToDos()
 
-			if toDoQuestion.Master {
-				table = append(table, []string{fmt.Sprintf("\b\b  \n\n| < %s >", toDoQuestion.Theme), "*************", toDoQuestion.Progress})
+		maxLength := 0
+
+		for _, toDoQuestion := range todos {
+			maxLength = max(len(toDoQuestion.Theme), maxLength)
+		}
+
+		for _, todoQuestion := range todos {
+			if todoQuestion.Master {
+				fmt.Printf(">%s\t%s\t%s\n", ConvLengthTo(todoQuestion.Theme, maxLength), todoQuestion.Progress, utils.GetColorWhite("*********************"))
 				continue
 			}
 
-			table = append(table, []string{toDoQuestion.Theme, toDoQuestion.CodeNums, toDoQuestion.Progress})
+			fmt.Printf("%s\t%s\t%s\n", ConvLengthTo(todoQuestion.Theme, maxLength), todoQuestion.Progress, todoQuestion.CodeNums)
 		}
 
-		utils.TablePrint(table)
 	},
+}
+
+func ConvLengthTo(str string, length int) string {
+	for i := 0; i < (length-len(str))/9; i++ {
+		str += "\t"
+	}
+	return str
+}
+
+func max(a, b int) int {
+	if a >= b {
+		return a
+	}
+
+	return b
 }
 
 func init() {
