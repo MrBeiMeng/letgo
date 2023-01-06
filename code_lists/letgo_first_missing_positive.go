@@ -1,7 +1,5 @@
 package code_lists
 
-import "sort"
-
 /*缺失的第一个正数 | https://leetcode.cn/problems/first-missing-positive*/
 
 // firstMissingPositive
@@ -13,14 +11,36 @@ import "sort"
 //	@param nums
 //	@return int
 func firstMissingPositive(nums []int) int {
-	sort.Sort(sort.IntSlice(nums))
 
-	big := 0
-	for _, num := range nums {
-		if num-big == 1 {
-			big = num
+	bound := len(nums) + 1
+
+	for index, num := range nums {
+		if num <= 0 {
+			nums[index] = -nums[index] + bound
 		}
 	}
 
-	return big + 1
+	for _, num := range nums {
+		if num < 0 {
+			num *= -1
+		}
+
+		if num >= bound {
+			continue
+		}
+
+		if nums[num-1] > 0 {
+			nums[num-1] *= -1
+		}
+	}
+
+	for i, num := range nums {
+		if num < 0 {
+			continue
+		}
+
+		return i + 1
+	}
+
+	return bound
 }
