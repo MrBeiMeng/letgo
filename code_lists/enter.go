@@ -28,6 +28,7 @@ func init() {
 	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(448, findDisappearedNumbers))
 	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(442, findDuplicates))
 	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(274, hIndex))
+	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(41, firstMissingPositive))
 	// enter new code here
 }
 
