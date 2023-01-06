@@ -27,6 +27,7 @@ func init() {
 	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(697, findShortestSubArray))
 	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(448, findDisappearedNumbers))
 	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(442, findDuplicates))
+	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(274, hIndex))
 	// enter new code here
 }
 
