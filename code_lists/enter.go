@@ -32,6 +32,7 @@ func init() {
 	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(283, moveZeroes))
 	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(453, minMoves))
 	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(665, checkPossibility))
+	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(118, generate))
 	// enter new code here
 }
 
