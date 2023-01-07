@@ -30,6 +30,7 @@ func init() {
 	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(274, hIndex))
 	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(41, firstMissingPositive))
 	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(283, moveZeroes))
+	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(453, minMoves))
 	// enter new code here
 }
 
