@@ -148,15 +148,22 @@ func (c CodeServiceImpl) InitTodoCode(num int) {
 	data_access.ProblemsMapper.InitInsertQuestionStatus(num)
 }
 
-func (c CodeServiceImpl) Run(codeNum int, argsStr string, saveAll bool, rightAnswers ...string) {
+func (c CodeServiceImpl) Run(runWrapper type_def.RunWrapper) {
+	codeNum := runWrapper.CodeNum
+
 	// 获取对应题目
 	solution, ok := getSolutionByCodeNum(codeNum)
 	if !ok {
-		fmt.Printf("查无此题[%d]", codeNum)
+		fmt.Printf("查无此题[%d]\n", codeNum)
+		return
 	}
 
 	// 获取参数列表 - 新传入的 或 保存在数据库的
-	serviceArgsList := getArgs(codeNum, argsStr, rightAnswers, solution)
+	serviceArgsList := getArgs(codeNum, runWrapper.ArgsStr, runWrapper.RightAnswer, solution)
+	if len(serviceArgsList) == 0 {
+		fmt.Printf("暂无测试参数\n")
+		return
+	}
 
 	// log
 	fmt.Printf("| 运行时间\t| %s\n", utils.GetColorGreen(time.Now().Format("2006-01-02 15:04:13")))
@@ -172,31 +179,47 @@ func (c CodeServiceImpl) Run(codeNum int, argsStr string, saveAll bool, rightAns
 
 		tmpAnswer := sprintCalled(calledList)
 
-		savingFlag := false
-
 		if tmpServiceArg.RightAnswer != "" {
 			verifyAnswer(tmpAnswer, tmpServiceArg)
 		}
 
-		if (!tmpServiceArg.Saved && tmpServiceArg.RightAnswer != "") || saveAll {
-
-			rightAnswer := tmpAnswer
-			if tmpServiceArg.RightAnswer != "" {
-				rightAnswer = tmpServiceArg.RightAnswer
-			}
-			savingFlag = goSaveTest(codeNum, &savingFlag, tmpServiceArg.Args, rightAnswer) // 协程保存
+		if (testFromUser(tmpServiceArg) && tmpServiceArg.RightAnswer != "") || runWrapper.SaveAll {
+			saveTest(runWrapper, tmpAnswer, tmpServiceArg, codeNum)
 		}
 
 		fmt.Printf("| %s\t| 参数列表 %s\t| 结果 %s\t| 用时 %s", time.Now().Format("15:04:13"), tmpServiceArg.Args, tmpAnswer, durationStr)
-
-		printNum := 0
-		waitSaving(&savingFlag, &printNum)
 		println()
 	}
 
+	if runWrapper.Done {
+		data_access.ProblemsMapper.QuestionDone(fmt.Sprintf("%d", codeNum))
+		fmt.Printf("question status done\n")
+	}
+}
+
+func saveTest(runWrapper type_def.RunWrapper, tmpAnswer string, tmpServiceArg type_def.QuestionTest, codeNum int) {
+	rightAnswer := tmpAnswer
+	if tmpServiceArg.RightAnswer != "" { // 如果用户携带了正确结果,否则使用函数运行的结果
+		rightAnswer = tmpServiceArg.RightAnswer
+	}
+
+	runFunc := func() {
+		err := data_access.ProblemsMapper.SaveOrUpdateTest(codeNum, runWrapper.ArgsStr, rightAnswer)
+		if err != nil {
+			println(err.Error())
+		}
+		print("saved")
+	}
+
+	utils.ThreadUtil.AddThread(runFunc)
+}
+
+func testFromUser(tmpServiceArg type_def.QuestionTest) bool {
+	return !tmpServiceArg.Saved
 }
 
 func goSaveTest(codeNum int, savingFlag *bool, arg, rightAnswer string) bool {
+
 	*savingFlag = true
 	go func() {
 		err := data_access.ProblemsMapper.SaveOrUpdateTest(codeNum, arg, rightAnswer)
@@ -233,17 +256,17 @@ func verifyAnswer(tmpAnswer string, tmpServiceArg type_def.QuestionTest) {
 	return
 }
 
-func getArgs(codeNum int, argsStr string, rightAnswer []string, solution code_lists.QuestionSolution) []type_def.QuestionTest {
+func getArgs(codeNum int, argsStr string, rightAnswer string, solution code_lists.QuestionSolution) []type_def.QuestionTest {
 	serviceArgsList := make([]type_def.QuestionTest, 0)
-	tests := data_access.ProblemsMapper.GetTests(fmt.Sprintf("%d", codeNum))
-	if !strings.EqualFold(argsStr, "") { // 如无参数，则使用默认测试参数
+	tests := data_access.ProblemsMapper.GetTests(fmt.Sprintf("%d", codeNum)) // 自数据库获取保存的参数列表
+	if !strings.EqualFold(argsStr, "") {                                     // 如无参数，则加入数据库中的所有测试参数
 		test := type_def.QuestionTest{Args: argsStr, FrontendQuestionId: fmt.Sprintf("%d", codeNum)}
-		if len(rightAnswer) > 0 {
-			test.RightAnswer = rightAnswer[0]
+		if rightAnswer != "" {
+			test.RightAnswer = rightAnswer
 		}
 
 		serviceArgsList = append(serviceArgsList, test)
-	} else {
+	} else { // 可以在 enter.go 中直接加入测试参数，这里对其进行优先加载
 		for _, testArgsStr := range solution.Tests {
 			serviceArgsList = append(serviceArgsList, type_def.QuestionTest{Args: testArgsStr, FrontendQuestionId: fmt.Sprintf("%d", solution.CodeNum)})
 		}
@@ -257,7 +280,7 @@ func getArgs(codeNum int, argsStr string, rightAnswer []string, solution code_li
 		modelTestMap[testObj.Args] = testObj
 	}
 
-	for i, serviceArg := range serviceArgsList {
+	for i, serviceArg := range serviceArgsList { // 例如使用 run 123 -a[1,2,3] 时如已保存过正确答案，自动匹配答案
 		if serviceArg.RightAnswer != "" {
 			continue
 		}

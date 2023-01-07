@@ -10,6 +10,15 @@ import (
 type ProblemsMapperImpl struct {
 }
 
+func (p ProblemsMapperImpl) QuestionDone(codeNum string) {
+	updateSql := "update questions set status = 'AC' where frontend_question_id = ?;"
+
+	err := MysqlDB.Exec(updateSql, codeNum).Error
+	if err != nil {
+		panic(err)
+	}
+}
+
 func (p ProblemsMapperImpl) GetTests(codeNum string) (result []models.QuestionTest) {
 	err := MysqlDB.Where("frontend_question_id = ?", codeNum).Find(&result).Error
 	if err != nil {

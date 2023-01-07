@@ -107,3 +107,11 @@ type QuestionTest struct {
 	RightAnswer        string
 	Saved              bool
 }
+
+type RunWrapper struct {
+	CodeNum     int
+	ArgsStr     string
+	SaveAll     bool // 强制保存
+	RightAnswer string
+	Done        bool
+}

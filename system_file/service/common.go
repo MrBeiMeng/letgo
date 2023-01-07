@@ -6,7 +6,7 @@ import (
 
 type CodeServiceI interface {
 	Search(wrapper type_def.CodeQueryWrapper) type_def.Questions
-	Run(codeNum int, args string, saveAll bool, rightAnswer ...string)
+	Run(arg type_def.RunWrapper)
 	InitTodoCode(num int)
 	GetByCodeNum(num int) type_def.Question
 	OperateLog(summary, msg, opType string)

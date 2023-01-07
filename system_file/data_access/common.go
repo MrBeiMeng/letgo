@@ -13,6 +13,7 @@ type ProblemsMapperI interface {
 	CountDone(codeNums []string) int
 	SaveOrUpdateTest(codeNum int, strArgs string, rightAnswer string) error
 	GetTests(codeNum string) []models.QuestionTest
+	QuestionDone(codeNum string)
 }
 
 var ProblemsMapper ProblemsMapperI = ProblemsMapperImpl{}
