@@ -103,8 +103,12 @@ func (a ArgsHandler) GetIntArr(s string) []int {
 
 // GetIntMatrix 获取2x2矩阵
 func (a ArgsHandler) GetIntMatrix(s string) [][]int {
-
 	matrix := make([][]int, 0)
+
+	if strings.EqualFold(s, "[]") {
+		return matrix
+	}
+
 	for _, arrStr := range strings.Split(s, "],[") {
 		matrix = append(matrix, a.GetIntArr(arrStr))
 	}

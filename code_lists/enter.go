@@ -35,6 +35,7 @@ func init() {
 	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(118, generate))
 	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(119, getRow))
 	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(661, imageSmoother))
+	QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(598, maxCount))
 	// enter new code here
 }
 
