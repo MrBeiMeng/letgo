@@ -24,11 +24,11 @@ type Questions struct {
 	Difficulty         string           `json:"difficulty"`
 	FreqBar            int              `json:"freqBar"`
 	PaidOnly           bool             `json:"paidOnly"`
-	Status             string           `json:"status"`
-	FrontendQuestionId string           `json:"frontendQuestionId"`
+	Status             string           `json:"status" gorm:"type:varchar(255)"`
+	FrontendQuestionId string           `json:"frontendQuestionId" gorm:"type:varchar(255)"`
 	IsFavor            bool             `json:"isFavor"`
 	SolutionNum        int              `json:"solutionNum"`
-	Title              string           `json:"title" gorm:"unique"`
+	Title              string           `json:"title" gorm:"unique" gorm:"type:varchar(191)"`
 	TitleCn            string           `json:"titleCn"`
 	TitleSlug          string           `json:"titleSlug"`
 	CompanyTagNum      int              `json:"companyTagNum"`
@@ -86,4 +86,12 @@ type QuestionTest struct {
 	FrontendQuestionId string `gorm:"index:idx_name,unique"`
 	Args               string `gorm:"index:idx_name,unique"`
 	RightAnswer        string
+}
+
+type Manifest struct {
+	gorm.Model
+	QuestionsFrontIds string `gorm:"type:varchar(1000)"`
+	Title             string `gorm:"type:varchar(255);index:unique"`
+	Mark              string `gorm:"type:varchar(500)"`
+	Tags              string `gorm:"type:varchar(1000);commit:'标签以逗号分割'"`
 }

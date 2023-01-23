@@ -92,7 +92,7 @@ func (p ProblemsMapperImpl) GetByCodeNumInDB(codeNum string) (result models.Ques
 }
 
 func (p ProblemsMapperImpl) GetByCodeNum(codeNum int) (question models.Questions) {
-	err := MysqlDB.Where("frontend_question_id = ?", codeNum).First(&question).Error
+	err := MysqlDB.Where("frontend_question_id = ?", codeNum).Find(&question).Error
 	if err != nil {
 		panic(err)
 	}

@@ -24,7 +24,7 @@ func main() {
 	headerMap["x-csrftoken"] = "Qg2oPO181zv8CQdSl68cyiD2pXyVFVEkgtEvMXvY4NKvqU31Xjj9mk7HlKO9YnPC"
 	headerMap["user-agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
 
-	for i := 28; i < 29; i++ {
+	for i := 0; i < 29-28; i++ {
 		skip = 100 * i
 		startedTime := time.Now()
 		println(fmt.Sprintf("%s\t|正在归档：[%d/%d]", startedTime.Format("2006-01-02:15:04:13"), skip, 28*100))
