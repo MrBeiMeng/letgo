@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
+	"letgo_repo/system_file/cmd/param_def"
 	"letgo_repo/system_file/service"
 	"letgo_repo/system_file/service/manifest/type_def"
 	"letgo_repo/system_file/utils"
@@ -17,10 +18,13 @@ var manifestCmd = &cobra.Command{
 	Short: "查看题目清单",
 	Long:  `查看清单`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if !strings.EqualFold(add, "") {
+
+		// 当前只提供查询功能
+
+		if manifestParam.CaseAdd() {
 			// title,frontIds,tags,mark
 
-			dataList := utils.RoughSplit(add)
+			dataList := utils.RoughSplit(manifestParam.Add)
 
 			if len(dataList) < 2 {
 				println("命令add，提供的参数太少")
@@ -53,22 +57,32 @@ var manifestCmd = &cobra.Command{
 
 			return
 		}
+
+		if manifestParam.CaseShow() {
+			printTable := make([][]string, 0)
+			printTable = append(printTable, []string{"标题", "标记", "标签", "题目列表"})
+			manifests := service.CodeServiceGroupV1.ServiceManifest.GetList()
+
+			for _, manifest := range manifests {
+				row := []string{manifest.Title, manifest.Mark, manifest.GetTags(), manifest.GetFrontIdsWithColor()}
+
+				printTable = append(printTable, row)
+			}
+
+			utils.TablePrintColorHandler(printTable, []int{3})
+		}
 	},
 }
 
-var add string
-var create bool
-var remove string
-var clear bool
-var set []string
-var manifestTitle string
+var manifestParam param_def.ManifestCmdWrapper
 
 func init() {
 	rootCmd.AddCommand(manifestCmd)
-	manifestCmd.Flags().StringVar(&add, "add", "", "添加题目至清单")
-	manifestCmd.Flags().StringVar(&remove, "remove", "", "清除清单中的题目")
-	manifestCmd.Flags().StringSliceVar(&set, "set", nil, "将清单题目列表重置成传入参数")
-	manifestCmd.Flags().BoolVar(&create, "create", false, "创建清单")
-	manifestCmd.Flags().BoolVar(&clear, "clear", false, "清空这个清单")
-	manifestCmd.PersistentFlags().BoolVarP(&detail, "detail", "d", false, "详细打印")
+	manifestCmd.Flags().StringVar(&manifestParam.Add, "add", "", "添加题目至清单")
+	manifestCmd.Flags().StringVar(&manifestParam.Remove, "remove", "", "清除清单中的题目")
+	manifestCmd.Flags().StringSliceVar(&manifestParam.Set, "set", nil, "将清单题目列表重置成传入参数")
+	manifestCmd.Flags().BoolVar(&manifestParam.Create, "create", false, "创建清单")
+	manifestCmd.Flags().BoolVar(&manifestParam.Show, "show", false, "打印")
+	manifestCmd.Flags().BoolVar(&manifestParam.Clear, "clear", false, "清空这个清单")
+	//manifestCmd.PersistentFlags().BoolVarP(&detail, "detail", "d", false, "详细打印")
 }

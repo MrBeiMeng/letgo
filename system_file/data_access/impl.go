@@ -81,8 +81,8 @@ func (p ProblemsMapperImpl) InitInsertQuestionStatus(num int) {
 	}
 }
 
-func (p ProblemsMapperImpl) GetByCodeNumInDB(codeNum string) (result models.Questions) {
-	var question models.Questions
+func (p ProblemsMapperImpl) GetByCodeNumInDB(codeNum string) (result models.Question) {
+	var question models.Question
 	err := MysqlDB.Where("frontend_question_id = ?", codeNum).First(&question).Error // 根据整型主键查找
 	if err != nil {
 		panic(err)
@@ -91,7 +91,7 @@ func (p ProblemsMapperImpl) GetByCodeNumInDB(codeNum string) (result models.Ques
 	return question
 }
 
-func (p ProblemsMapperImpl) GetByCodeNum(codeNum int) (question models.Questions) {
+func (p ProblemsMapperImpl) GetByCodeNum(codeNum int) (question models.Question) {
 	err := MysqlDB.Where("frontend_question_id = ?", codeNum).Find(&question).Error
 	if err != nil {
 		panic(err)

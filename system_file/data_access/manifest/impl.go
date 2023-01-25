@@ -3,6 +3,7 @@ package manifest
 import (
 	"gorm.io/gorm/clause"
 	"letgo_repo/system_file/data_access"
+	"letgo_repo/system_file/data_access/manifest/type_def"
 	"letgo_repo/system_file/data_access/models"
 	utils2 "letgo_repo/system_file/utils"
 	"strings"
@@ -40,9 +41,13 @@ func (i DAManifestImpl) InsertManifest(modelManifest models.Manifest) {
 	}
 }
 
-func (i DAManifestImpl) Select() []models.Manifest {
-	//TODO implement me
-	panic("implement me")
+func (i DAManifestImpl) Select(queryWrapper type_def.QueryWrapper) (resultList []models.Manifest) {
+	// 查询所有
+	err := data_access.MysqlDB.Order("tags").Find(&resultList).Error
+	if err != nil {
+		panic(err)
+	}
+	return
 }
 
 func (DAManifestImpl) test() {

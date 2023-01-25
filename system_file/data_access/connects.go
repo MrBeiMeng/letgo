@@ -50,7 +50,7 @@ func GenerateTable() error {
 		return err
 	}
 
-	err = migrator.AutoMigrate(&models.Questions{})
+	err = migrator.AutoMigrate(&models.Question{})
 	if err != nil {
 		return err
 	}

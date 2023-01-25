@@ -73,7 +73,7 @@ func (q Questions) EasyPrint() {
 
 type Question struct {
 	RunFunc interface{}
-	models.Questions
+	models.Question
 	Url              string
 	Tags             []string
 	TopUsedCompanies []string

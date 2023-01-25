@@ -17,7 +17,7 @@ type TopCompanyTags struct {
 	Typename string `json:"__typename"`
 }
 
-type Questions struct {
+type Question struct {
 	gorm.Model
 	Typename           string           `json:"__typename"`
 	AcRate             float64          `json:"acRate"`
@@ -25,7 +25,7 @@ type Questions struct {
 	FreqBar            int              `json:"freqBar"`
 	PaidOnly           bool             `json:"paidOnly"`
 	Status             string           `json:"status" gorm:"type:varchar(255)"`
-	FrontendQuestionId string           `json:"frontendQuestionId" gorm:"type:varchar(255)"`
+	FrontendQuestionId string           `json:"frontendQuestionId" gorm:"type:varchar(255);index:unique"`
 	IsFavor            bool             `json:"isFavor"`
 	SolutionNum        int              `json:"solutionNum"`
 	Title              string           `json:"title" gorm:"unique" gorm:"type:varchar(191)"`
@@ -35,35 +35,6 @@ type Questions struct {
 	HasVideoSolution   bool             `json:"hasVideoSolution"`
 	TopCompanyTags     []TopCompanyTags `json:"topCompanyTags" gorm:"many2many:questions_top_company_tags;"`
 	TopicTags          []TopicTags      `json:"topicTags" gorm:"many2many:questions_topic_tags;"`
-}
-
-type QuestionInfo struct {
-	Id                string
-	Title             string
-	TitleSlug         string
-	ArticleLive       string
-	ArticleSlug       string
-	Level             string
-	TotalSubmitted    string
-	TotalAcs          string
-	FrontendId        string
-	TranslatedTitle   string
-	Content           string
-	Tags              string
-	TranslatedContent string
-	CodeSnippets      string
-}
-
-type Question struct {
-	QuestionInfo
-	QuestionStatus
-}
-
-type QuestionStatus struct {
-	QuestionId string
-	Star       string
-	Status     string
-	Visible    bool
 }
 
 type OperationRecords struct {

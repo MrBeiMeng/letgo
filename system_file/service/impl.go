@@ -26,7 +26,7 @@ func getQuestions() (questionsMap map[int]type_def.Question, questionsList []typ
 
 		var questionValue type_def.Question
 
-		questionValue.Questions = question
+		questionValue.Question = question
 		questionValue.Url = "https://leetcode.cn/problems/" + question.TitleSlug
 		for _, topTag := range questionValue.TopicTags {
 			questionValue.Tags = append(questionValue.Tags, topTag.NameTranslated)
@@ -133,11 +133,11 @@ func (c CodeServiceImpl) OperateLog(summary, msg, opType string) {
 
 func (c CodeServiceImpl) GetByCodeNum(num int) (result type_def.Question) {
 
-	var question models.Questions
+	var question models.Question
 
 	data_access.MysqlDB.Where("frontend_question_id = ?", num).First(&question)
 
-	result.Questions = question
+	result.Question = question
 	result.Url = "https://leetcode.cn/problems/" + question.TitleSlug
 	codeNum, _ := strconv.Atoi(question.FrontendQuestionId)
 	result.CodeNum = codeNum

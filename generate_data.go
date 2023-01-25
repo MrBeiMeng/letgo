@@ -70,7 +70,7 @@ func initQuestionList(cookies string, headerMap map[string]string, skip int) {
 	}
 }
 
-func SaveData(mQuestion models.Questions) bool {
+func SaveData(mQuestion models.Question) bool {
 	db := data_access.MysqlDB
 
 	err := db.Save(&mQuestion.TopicTags).Error
@@ -125,7 +125,7 @@ func SaveData(mQuestion models.Questions) bool {
 	return false
 }
 
-func convToModelQuestion(question generate.Questions) (result models.Questions) {
+func convToModelQuestion(question generate.Questions) (result models.Question) {
 	for _, topTag := range question.TopicTags {
 		var mTopTag models.TopicTags
 
@@ -147,7 +147,7 @@ func convToModelQuestion(question generate.Questions) (result models.Questions) 
 	return result
 }
 
-func InitQuestionDetail(cookies string, headerMap map[string]string, question models.Questions) []byte {
+func InitQuestionDetail(cookies string, headerMap map[string]string, question models.Question) []byte {
 	reqBody := "{\"query\":\"\\n    query questionEditorData($titleSlug: String!) {\\n  question(titleSlug: $titleSlug) {\\n    questionId\\n    questionFrontendId\\n    codeSnippets {\\n      lang\\n      langSlug\\n      code\\n    }\\n    envInfo\\n    enableRunCode\\n  }\\n}\\n    \",\"variables\":{\"titleSlug\":\"%s\"}}"
 	questionDetail := utils2.HttpPost(`https://leetcode.cn/graphql/`, cookies, headerMap, fmt.Sprintf(reqBody, question.TitleSlug))
 	return questionDetail

@@ -8,6 +8,56 @@ import (
 
 var GlobalRetraction = make([]string, 0)
 
+func Max(a, b int) int {
+	if a >= b {
+		return a
+	}
+
+	return b
+}
+
+func ConvStrLengthTo(str string, length int) string {
+	num := length - GetStrLength(str)
+	for i := 0; i < num; i++ {
+		str += GetColorBlue("")
+	}
+	return str
+}
+
+func GetStrLength(str string) int {
+	num := 0
+	str = strings.ReplaceAll(str, "\u001B[0m", " ")
+
+	num += strings.Count(str, "\033[1;00m")
+	num += strings.Count(str, "\033[1;31m")
+	num += strings.Count(str, "\033[1;32m")
+	num += strings.Count(str, "\033[1;33m")
+	num += strings.Count(str, "\033[1;34m")
+	num += strings.Count(str, "\033[1;35m")
+	num += strings.Count(str, "\033[1;36m")
+	num += strings.Count(str, "\033[1;37m")
+
+	return num
+}
+
+func TablePrintColorHandler(strTable [][]string, colorColumn []int) {
+	lengthArr := make([]int, len(strTable[0]))
+
+	for _, arr := range strTable {
+		for _, index := range colorColumn {
+			lengthArr[index] = Max(GetStrLength(arr[index]), lengthArr[index])
+		}
+	}
+
+	for i := 0; i < len(strTable); i++ {
+		for _, index := range colorColumn {
+			strTable[i][index] = ConvStrLengthTo(strTable[i][index], lengthArr[index])
+		}
+	}
+
+	TablePrint(strTable)
+}
+
 func TablePrint(strTable [][]string) {
 
 	table, err := gotable.Create(strTable[0]...)
@@ -16,7 +66,7 @@ func TablePrint(strTable [][]string) {
 		return
 	}
 
-	for i := 1; i < 10; i++ {
+	for i := 1; i < len(strTable); i++ {
 		err = table.AddRow(strTable[i])
 		if err != nil {
 			println(err.Error())
