@@ -25,6 +25,16 @@ func GenerateTable() error {
 		return err
 	}
 
+	err = migrator.AutoMigrate(&models.TodoQuestion{})
+	if err != nil {
+		return err
+	}
+
+	err = migrator.AutoMigrate(&models.Todo{})
+	if err != nil {
+		return err
+	}
+
 	err = migrator.AutoMigrate(&models.Manifest{})
 	if err != nil {
 		return err

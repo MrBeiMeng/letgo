@@ -44,6 +44,22 @@ type OperationRecords struct {
 	OpType  string
 }
 
+type Todo struct {
+	gorm.Model
+	ManifestTitle string `gorm:"type:varchar(255);index:idx_name,unique"`
+	ManifestMark  string `gorm:"type:varchar(500)"`
+	ManifestTag   string `gorm:"type:varchar(255);index:idx_name,unique"`
+	Series        string `gorm:"type:varchar(255);index:idx_name,unique"`
+}
+
+type TodoQuestion struct {
+	gorm.Model
+	TodoId             uint
+	FrontendQuestionId string `gorm:"type:varchar(255);"`
+	Difficulty         string `gorm:"type:varchar(255)"`
+	Status             string `gorm:"type:varchar(500);;commit:'enum Done|Doing|Null'"`
+}
+
 type ToDoQuestion struct {
 	gorm.Model
 	Theme    string

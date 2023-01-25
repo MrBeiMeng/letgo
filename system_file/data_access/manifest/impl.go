@@ -42,10 +42,37 @@ func (i DAManifestImpl) InsertManifest(modelManifest models.Manifest) {
 }
 
 func (i DAManifestImpl) Select(queryWrapper type_def.QueryWrapper) (resultList []models.Manifest) {
-	// 查询所有
-	err := data_access.MysqlDB.Order("tags").Find(&resultList).Error
-	if err != nil {
-		panic(err)
+	if queryWrapper.CaseNothing() {
+		// 查询所有
+		err := data_access.MysqlDB.Order("tags").Find(&resultList).Error
+		if err != nil {
+			panic(err)
+		}
+
+		return
+	}
+
+	tmpResult1 := make([]models.Manifest, 0)
+	if len(queryWrapper.TagSlice) != 0 {
+		err := data_access.MysqlDB.Where("tags in ?", queryWrapper.TagSlice).Find(&tmpResult1).Error
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	tmpResult2 := make([]models.Manifest, 0)
+	if len(queryWrapper.TitleSlice) != 0 {
+		err := data_access.MysqlDB.Where("title in ?", queryWrapper.TitleSlice).Find(&tmpResult2).Error
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	for _, manifest := range tmpResult1 {
+		resultList = append(resultList, manifest)
+	}
+	for _, manifest := range tmpResult2 {
+		resultList = append(resultList, manifest)
 	}
 	return
 }

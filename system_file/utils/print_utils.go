@@ -55,10 +55,10 @@ func TablePrintColorHandler(strTable [][]string, colorColumn []int) {
 		}
 	}
 
-	TablePrint(strTable)
+	TablePrint(strTable, false)
 }
 
-func TablePrint(strTable [][]string) {
+func TablePrint(strTable [][]string, borderVisible bool) {
 
 	table, err := gotable.Create(strTable[0]...)
 	if err != nil {
@@ -72,7 +72,9 @@ func TablePrint(strTable [][]string) {
 			println(err.Error())
 		}
 	}
-	table.CloseBorder()
+	if !borderVisible {
+		table.CloseBorder()
+	}
 	println(table.String())
 }
 
