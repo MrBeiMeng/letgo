@@ -1,6 +1,9 @@
 package type_def
 
-import "letgo_repo/system_file/data_access/models"
+import (
+	"letgo_repo/system_file/data_access/models"
+	"strings"
+)
 
 type SeriesWrapper struct {
 	Series string
@@ -41,4 +44,17 @@ func (t *Todo) ConvFrom(tmpModel models.Todo) Todo {
 type AddTodo struct {
 	Series       string
 	ManifestList []string
+}
+
+func (a *AddTodo) Check() (bool, string) {
+
+	if strings.TrimSpace(a.Series) == "" {
+		return false, "未传入series"
+	}
+
+	if len(a.ManifestList) != 0 {
+		return false, "add 参数未携带任何有效值"
+	}
+
+	return true, ""
 }

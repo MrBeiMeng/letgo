@@ -6,4 +6,6 @@ type ServiceTodo interface {
 	CreateSeries(wrapper type_def.SeriesWrapper)
 	GetList(wrapper type_def.QueryWrapper) []type_def.TodoSeries
 	Save(todo type_def.AddTodo)
+	GetDefaultSeriesName() (string, error)
+	ChangeDefaultSeries(series string) error
 }

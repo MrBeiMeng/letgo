@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"gorm.io/gorm/clause"
 	"letgo_repo/system_file/data_access/models"
+	"letgo_repo/system_file/data_access/todo"
 	"letgo_repo/system_file/utils/enum"
+	"letgo_repo/system_file/utils/logger"
 )
 
 type ProblemsMapperImpl struct {
@@ -14,6 +16,20 @@ func (p ProblemsMapperImpl) QuestionDone(codeNum string) {
 	updateSql := "update questions set status = 'AC' where frontend_question_id = ?;"
 
 	err := MysqlDB.Exec(updateSql, codeNum).Error
+	if err != nil {
+		panic(err)
+	}
+
+	updateSql2 := "update todo_questions,todos set todo_questions.status = ? where todo_questions.todo_id = todos.id and todos.series = ? and todo_questions.frontend_question_id = ?"
+
+	series, err := todo.DATodoV1.SelectDefaultSeriesName()
+	if err != nil {
+		panic(err)
+	}
+
+	logger.Logger.Info("使用默认series [%s]", series)
+
+	err = MysqlDB.Exec(updateSql2, enum.DONE, series, codeNum).Error
 	if err != nil {
 		panic(err)
 	}

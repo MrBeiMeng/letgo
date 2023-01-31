@@ -50,6 +50,7 @@ type Todo struct {
 	ManifestMark  string `gorm:"type:varchar(500)"`
 	ManifestTag   string `gorm:"type:varchar(255);index:idx_name,unique"`
 	Series        string `gorm:"type:varchar(255);index:idx_name,unique"`
+	Default       bool
 }
 
 type TodoQuestion struct {

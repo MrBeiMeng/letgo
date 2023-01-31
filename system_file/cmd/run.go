@@ -6,6 +6,7 @@ import (
 	"letgo_repo/system_file/service"
 	"letgo_repo/system_file/service/type_def"
 	"letgo_repo/system_file/utils"
+	"letgo_repo/system_file/utils/logger"
 	"strconv"
 	"time"
 )
@@ -17,8 +18,7 @@ var runCmd = &cobra.Command{
 	Long:  `你可以不传参数表示运行demo，或者传递参数测试进行黑盒测试`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
-			println("请传入题号")
-			return
+			logger.Logger.Break("请传入题号")
 		}
 
 		codeNum, _ := strconv.Atoi(args[0])

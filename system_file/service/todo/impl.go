@@ -8,13 +8,25 @@ import (
 	"letgo_repo/system_file/data_access/todo"
 	"letgo_repo/system_file/service/todo/type_def"
 	"letgo_repo/system_file/utils/enum"
+	"letgo_repo/system_file/utils/logger"
 	"strings"
 )
 
 type ServiceTodoImpl struct{}
 
+func (i ServiceTodoImpl) ChangeDefaultSeries(series string) error {
+	return todo.DATodoV1.ChangeDefaultSeries(series)
+}
+
+func (i ServiceTodoImpl) GetDefaultSeriesName() (string, error) {
+	return todo.DATodoV1.SelectDefaultSeriesName()
+}
+
 func (i ServiceTodoImpl) Save(addTodo type_def.AddTodo) {
 	//  manifestList 可能是清单 title 名或者 清单 tag 名
+	if ok, msg := addTodo.Check(); !ok {
+		logger.Logger.Break(msg)
+	}
 
 	// 获取系列
 	manifests := manifest.DAManifestV1.Select(manifest_type_def.QueryWrapper{
@@ -42,7 +54,7 @@ func (i ServiceTodoImpl) Save(addTodo type_def.AddTodo) {
 				TodoId:             todos[index].ID,
 				Difficulty:         question.DAQuestionV1.GetById(frontId).Difficulty,
 				FrontendQuestionId: frontId,
-				Status:             enum.INITIALIZED,
+				Status:             enum.NOT_START,
 			})
 		}
 	}
@@ -54,7 +66,7 @@ func (i ServiceTodoImpl) Save(addTodo type_def.AddTodo) {
 func (i ServiceTodoImpl) GetList(wrapper type_def.QueryWrapper) []type_def.TodoSeries {
 	resultList := make([]type_def.TodoSeries, 0)
 
-	todoModels := todo.DATodoV1.SelectAll()
+	todoModels := todo.DATodoV1.SelectAll(models.Todo{Series: wrapper.Series})
 
 	tmpMap := GroupBySeries(todoModels)
 

@@ -6,6 +6,7 @@ const (
 
 	DONE        = "DONE"
 	INITIALIZED = "INITIALIZED"
+	NOT_START   = "NOT_START"
 	DOING       = "DOING"
 
 	TODO = "ToDo"
