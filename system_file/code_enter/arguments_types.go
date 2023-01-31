@@ -84,6 +84,22 @@ func (a ArgsHandler) GetLinkedList(linkedList string) (result *ListNode) {
 	return result
 }
 
+// GetStringArr 获取数组
+func (a ArgsHandler) GetStringArr(s string) []string {
+	s = strings.Trim(s, "][")
+
+	strList := make([]string, 0)
+	for _, str := range strings.Split(s, ",") {
+		if strings.EqualFold(str, "") {
+			continue
+		}
+
+		strList = append(strList, str)
+	}
+
+	return strList
+}
+
 // GetIntArr 获取数组
 func (a ArgsHandler) GetIntArr(s string) []int {
 	s = strings.Trim(s, "][")

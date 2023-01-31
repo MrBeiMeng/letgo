@@ -451,6 +451,9 @@ func sliceHandler(t reflect.Type, i int, argsStrSlice []string, argsSlice []refl
 	case reflect.Int:
 		nums := code_enter.ArgsHandlerV1.GetIntArr(argsStrSlice[i])
 		argsSlice = append(argsSlice, reflect.ValueOf(nums))
+	case reflect.String:
+		strList := code_enter.ArgsHandlerV1.GetStringArr(argsStrSlice[i])
+		argsSlice = append(argsSlice, reflect.ValueOf(strList))
 	case reflect.Slice:
 		sliceKind2 := t.In(i).Elem().Elem().Kind()
 		switch sliceKind2 {
