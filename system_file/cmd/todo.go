@@ -106,6 +106,10 @@ var todoCmd = &cobra.Command{
 						numSliceStr += ","
 					}
 					numSliceStr += todoQuestion.FrontendQuestionId
+					switch todoQuestion.Status {
+					case enum.DONE:
+						numSliceStr += "✌️"
+					}
 					switch todoQuestion.Difficulty {
 					case "EASY":
 						numSliceStr += "⇘"

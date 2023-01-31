@@ -47,6 +47,7 @@ func (i ServiceTodoImpl) Save(addTodo type_def.AddTodo) {
 	}
 	// 保存状态
 	todo.DATodoV1.InsertSlice(todos)
+	logger.Logger.Info("共添加了系列[%d]", len(todos))
 
 	for index, manifest := range manifests {
 		for _, frontId := range strings.Split(manifest.QuestionsFrontIds, ",") {
@@ -60,6 +61,7 @@ func (i ServiceTodoImpl) Save(addTodo type_def.AddTodo) {
 	}
 
 	todo.DATodoV1.InsertQuestionSlice(todoQuestionStatus)
+	logger.Logger.Info("共添加了系列题目[%d条]", len(todoQuestionStatus))
 
 }
 

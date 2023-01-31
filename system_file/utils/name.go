@@ -19,23 +19,58 @@ func ConvLineToCamel(name string) (camel string) {
 	return strings.Join(strs, "")
 }
 
-func InitFile(slug, url, titleCn string, codeNum int, code string) {
-	file, err := os.Create(fmt.Sprintf("code_lists/letgo_%s.go", strings.ReplaceAll(slug, "-", "_")))
+func InitFile(series, slug, url, titleCn string, codeNum int, code string) {
+	fileName := strings.ReplaceAll(slug, "-", "_")
+
+	os.MkdirAll(fmt.Sprintf("code_lists/%s/letgo_%s", series, fileName), 0777)
+
+	file, err := os.Create(fmt.Sprintf("code_lists/%s/letgo_%s/%s.go", series, fileName, fileName))
 	if err != nil {
 		panic(err)
 	}
 	defer file.Close()
 
-	template := `package code_lists
+	template := `package ${package}
+
+import (
+	_ "letgo_repo/system_file/code_enter"
+)
+
 /*${title} | ${url}*/
 
 ${code}
 `
+	template = strings.ReplaceAll(template, "${package}", fmt.Sprintf("letgo_%s", fileName))
 	template = strings.ReplaceAll(template, "${title}", titleCn)
 	template = strings.ReplaceAll(template, "${code}", fmt.Sprintf("%s", code))
 	template = strings.ReplaceAll(template, "${url}", fmt.Sprintf("%s", url))
 
+	template = strings.ReplaceAll(template, "{\n\n}", "{\n\t//TODO implement me\n\tpanic(\"implement me\")\n}")
+
 	file.WriteString(template)
+
+	file2, err := os.Create(fmt.Sprintf("code_lists/%s/letgo_%s/enter.go", series, fileName))
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	template2 := `package ${package}
+
+import "letgo_repo/system_file/code_enter"
+
+func init() {
+	code_enter.Enter("${series}", ${codeNum}, ${methodName})
+}
+`
+	methodName := strings.Split(strings.Split(code, "(")[0], "func ")[1]
+
+	template2 = strings.ReplaceAll(template2, "${package}", fmt.Sprintf("letgo_%s", fileName))
+	template2 = strings.ReplaceAll(template2, "${series}", series)
+	template2 = strings.ReplaceAll(template2, "${codeNum}", fmt.Sprintf("%d", codeNum))
+	template2 = strings.ReplaceAll(template2, "${methodName}", methodName)
+
+	file2.WriteString(template2)
 
 	/*// Exactly one of O_RDONLY, O_WRONLY, or O_RDWR must be specified.
 	O_RDONLY int = syscall.O_RDONLY // 只读模式
@@ -47,7 +82,7 @@ ${code}
 	O_EXCL   int = syscall.O_EXCL   // 和 O_CREATE模式一起使用, 文件必须不存在
 	O_SYNC   int = syscall.O_SYNC   //打开文件用于同步 I/O.
 	O_TRUNC  int = syscall.O_TRUNC  // 打开文件时清空文件*/
-	oFile, err := os.OpenFile("code_lists/enter.go", syscall.O_RDONLY, 666)
+	oFile, err := os.OpenFile(fmt.Sprintf("code_lists/%s/enter.go", series), syscall.O_RDONLY, 666)
 	if err != nil {
 		panic(err)
 	}
@@ -58,14 +93,13 @@ ${code}
 	}
 	oFile.Close()
 
-	methodName := strings.Split(strings.Split(code, "(")[0], "func ")[1]
+	newLine := fmt.Sprintf(`_ "letgo_repo/code_lists/%s/letgo_%s"
+	// import at here`, series, fileName)
 
-	newLine := fmt.Sprintf(`QuestionSolutionsV1 = append(QuestionSolutionsV1, GetProblemSolution(%d, %s))
-	// enter new code here`, codeNum, methodName)
+	//allStr := strings.ReplaceAll(string(all), "// import at here", strings.ReplaceAll(newLine, "${structName}", ConvLineToCamel(slug)))
+	allStr := strings.ReplaceAll(string(all), "// import at here", newLine)
 
-	allStr := strings.ReplaceAll(string(all), "// enter new code here", strings.ReplaceAll(newLine, "${structName}", ConvLineToCamel(slug)))
-
-	bFile, err := os.OpenFile("code_lists/enter.go", syscall.O_RDWR, 777)
+	bFile, err := os.OpenFile(fmt.Sprintf("code_lists/%s/enter.go", series), syscall.O_RDWR, 777)
 	if err != nil {
 		panic(err)
 	}

@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"letgo_repo/system_file/service"
+	"letgo_repo/system_file/service/old_service"
 	"letgo_repo/system_file/service/type_def"
 	"letgo_repo/system_file/utils"
 )
@@ -33,7 +33,7 @@ var lsCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		queryWrapper := getQueryWrapper()
 
-		projects := service.CodeService.Search(queryWrapper)
+		projects := old_service.CodeService.Search(queryWrapper)
 		if len(projects) == 0 {
 			utils.TPrint("没有符合条件的条目")
 			return

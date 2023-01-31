@@ -3,7 +3,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"letgo_repo/system_file/service"
+	"letgo_repo/system_file/service/old_service"
 	"letgo_repo/system_file/service/type_def"
 	"letgo_repo/system_file/utils"
 	"letgo_repo/system_file/utils/logger"
@@ -23,7 +23,7 @@ var runCmd = &cobra.Command{
 
 		codeNum, _ := strconv.Atoi(args[0])
 
-		service.CodeService.Run(type_def.RunWrapper{
+		old_service.CodeService.Run(type_def.RunWrapper{
 			CodeNum:     codeNum,
 			ArgsStr:     userArgs,
 			SaveAll:     saveAll,

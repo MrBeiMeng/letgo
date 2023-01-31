@@ -52,7 +52,7 @@ func (a *AddTodo) Check() (bool, string) {
 		return false, "未传入series"
 	}
 
-	if len(a.ManifestList) != 0 {
+	if len(a.ManifestList) == 0 {
 		return false, "add 参数未携带任何有效值"
 	}
 

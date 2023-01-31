@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"letgo_repo/system_file/service"
+	"letgo_repo/system_file/service/old_service"
 	"letgo_repo/system_file/service/type_def"
 	utils2 "letgo_repo/system_file/utils"
 	"letgo_repo/system_file/utils/enum"
@@ -26,7 +27,7 @@ var initCmd = &cobra.Command{
 
 		codeNum, _ := strconv.Atoi(args[0])
 
-		question := service.CodeService.GetByCodeNum(codeNum)
+		question := old_service.CodeService.GetByCodeNum(codeNum)
 		if question.CodeNum == 0 {
 			println("查无此题")
 			return
@@ -46,10 +47,15 @@ var initCmd = &cobra.Command{
 			}
 		}
 
-		utils2.InitFile(question.TitleSlug, question.Url, question.TitleCn, question.CodeNum, golangCodeTemplate.Code)
+		defaultSeriesName, err := service.ServiceGroupV1.ServiceTodo.GetDefaultSeriesName()
+		if err != nil {
+			panic(err)
+		}
+
+		utils2.InitFile(defaultSeriesName, question.TitleSlug, question.Url, question.TitleCn, question.CodeNum, golangCodeTemplate.Code)
 
 		fmt.Printf("%s| Inited %d %s %s", utils2.GetColorGreen("DONE"), question.CodeNum, question.TitleCn, question.Url)
-		service.CodeService.OperateLog(fmt.Sprintf("添加新题:%v", codeNum), golangCodeTemplate.Code, enum.INIT_CODE)
+		old_service.CodeService.OperateLog(fmt.Sprintf("添加新题:%v", codeNum), golangCodeTemplate.Code, enum.INIT_CODE)
 	},
 }
 

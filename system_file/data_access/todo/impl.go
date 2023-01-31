@@ -11,14 +11,14 @@ type DATodoImpl struct {
 
 func (D *DATodoImpl) ChangeDefaultSeries(series string) error {
 
-	updateSql := "update todos set dafalue = null where dafalue = true;"
+	updateSql := "update todos set default = null where dafalue = true;"
 
 	err := data_access.MysqlDB.Exec(updateSql).Error
 	if err != nil {
 		return err
 	}
 
-	updateSql = "update todos set dafalue = true where series = ?;"
+	updateSql = "update todos set default = true where series = ?;"
 	err = data_access.MysqlDB.Exec(updateSql, series).Error
 	if err != nil {
 		return err
@@ -29,7 +29,7 @@ func (D *DATodoImpl) ChangeDefaultSeries(series string) error {
 
 func (D *DATodoImpl) SelectDefaultSeriesName() (string, error) {
 
-	selectSql := "select * from todos where `dafalue` is true;"
+	selectSql := "select * from todos where `default` is true;"
 
 	resultList := make([]models.Todo, 0)
 
