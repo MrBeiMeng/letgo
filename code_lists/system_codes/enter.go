@@ -1,6 +1,7 @@
 package system_codes
 
 import (
+	_ "letgo_repo/code_lists/system_codes/letgo_contains_duplicate"
 	_ "letgo_repo/code_lists/system_codes/letgo_contains_duplicate_ii"
 	_ "letgo_repo/code_lists/system_codes/letgo_h_index"
 	_ "letgo_repo/code_lists/system_codes/letgo_minimum_index_sum_of_two_lists"

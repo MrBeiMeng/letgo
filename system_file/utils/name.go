@@ -93,11 +93,12 @@ func init() {
 	}
 	oFile.Close()
 
-	newLine := fmt.Sprintf(`_ "letgo_repo/code_lists/%s/letgo_%s"
-	// import at here`, series, fileName)
+	newLine := fmt.Sprintf(`"
+\t_ "letgo_repo/code_lists/%s/letgo_%s"
+)`, series, fileName)
 
 	//allStr := strings.ReplaceAll(string(all), "// import at here", strings.ReplaceAll(newLine, "${structName}", ConvLineToCamel(slug)))
-	allStr := strings.ReplaceAll(string(all), "// import at here", newLine)
+	allStr := strings.ReplaceAll(string(all), "\"\n)", newLine)
 
 	bFile, err := os.OpenFile(fmt.Sprintf("code_lists/%s/enter.go", series), syscall.O_RDWR, 777)
 	if err != nil {
