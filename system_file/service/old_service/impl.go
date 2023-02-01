@@ -189,6 +189,10 @@ func (c CodeServiceImpl) Run(runWrapper type_def.RunWrapper) {
 			saveTest(runWrapper, tmpAnswer, tmpServiceArg, codeNum)
 		}
 
+		if len(tmpServiceArg.Args) >= 20 {
+			tmpServiceArg.Args = tmpServiceArg.Args[:20] + "..."
+		}
+
 		fmt.Printf("| %s\t| 参数列表 %s\t| 结果 %s\t| 用时 %s", time.Now().Format("15:04:13"), tmpServiceArg.Args, tmpAnswer, durationStr)
 		println()
 	}

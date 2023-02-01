@@ -9,41 +9,23 @@ import (
 /*给你一个整数数组 nums 和一个整数 k ，判断数组中是否存在两个 不同的索引 i 和 j ，满足 nums[i] == nums[j] 且 abs(i - j) <= k 。如果存在，返回 true ；否则，返回 false 。*/
 
 func containsNearbyDuplicate(nums []int, k int) bool {
-	valueIndexMap := make(map[int]int)
+	// k 代表滑动窗口的最大长度
+	valueIndexMap := make(map[int]interface{})
 
-	minInterval := -1
+	lIndex := 0
 
-	for i, value := range nums {
-		if index, ok := valueIndexMap[value]; ok {
-			minInterval = min(minInterval, abs(i-index))
+	for index, num := range nums {
+		if index-lIndex > k {
+			delete(valueIndexMap, nums[lIndex])
+			lIndex++
 		}
 
-		valueIndexMap[value] = i
+		if _, ok := valueIndexMap[num]; ok {
+			return ok
+		}
+
+		valueIndexMap[num] = struct{}{}
 	}
 
-	return minInterval != -1 && minInterval <= k
-}
-
-func abs(a int) int {
-	if a < 0 {
-		return -1 * a
-	}
-
-	return a
-}
-
-func min(a, b int) int {
-	if a == -1 {
-		return b
-	}
-
-	if b == -1 {
-		return a
-	}
-
-	if a <= b {
-		return a
-	}
-
-	return b
+	return false
 }
