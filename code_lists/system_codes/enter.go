@@ -5,6 +5,7 @@ import (
 	_ "letgo_repo/code_lists/system_codes/letgo_contains_duplicate_ii"
 	_ "letgo_repo/code_lists/system_codes/letgo_contains_duplicate_iii"
 	_ "letgo_repo/code_lists/system_codes/letgo_h_index"
+	_ "letgo_repo/code_lists/system_codes/letgo_max_consecutive_ones"
 	_ "letgo_repo/code_lists/system_codes/letgo_minimum_index_sum_of_two_lists"
 	_ "letgo_repo/code_lists/system_codes/letgo_third_maximum_number"
 	_ "letgo_repo/code_lists/system_codes/letgo_two_sum"

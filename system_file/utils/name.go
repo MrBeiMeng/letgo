@@ -93,7 +93,7 @@ func init() {
 	}
 	oFile.Close()
 
-	newLine := fmt.Sprintf("\t_ \"letgo_repo/code_lists/%s/letgo_%s\")", series, fileName)
+	newLine := fmt.Sprintf("\"\n\t_ \"letgo_repo/code_lists/%s/letgo_%s\"\n)", series, fileName)
 
 	//allStr := strings.ReplaceAll(string(all), "// import at here", strings.ReplaceAll(newLine, "${structName}", ConvLineToCamel(slug)))
 	allStr := strings.ReplaceAll(string(all), "\"\n)", newLine)
