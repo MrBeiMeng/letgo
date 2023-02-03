@@ -34,6 +34,10 @@ func (i ServiceTodoImpl) Save(addTodo type_def.AddTodo) {
 		TagSlice:   addTodo.ManifestList,
 	})
 
+	if len(manifests) == 0 {
+		logger.Logger.Break("未找到对应的题目清单: 错误输入[%v]", addTodo.ManifestList)
+	}
+
 	// 保存
 	todos := make([]models.Todo, 0)
 	todoQuestionStatus := make([]models.TodoQuestion, 0)
