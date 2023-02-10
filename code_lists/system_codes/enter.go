@@ -4,6 +4,7 @@ import (
 	_ "letgo_repo/code_lists/system_codes/letgo_contains_duplicate"
 	_ "letgo_repo/code_lists/system_codes/letgo_contains_duplicate_ii"
 	_ "letgo_repo/code_lists/system_codes/letgo_contains_duplicate_iii"
+	_ "letgo_repo/code_lists/system_codes/letgo_find_the_duplicate_number"
 	_ "letgo_repo/code_lists/system_codes/letgo_first_missing_positive"
 	_ "letgo_repo/code_lists/system_codes/letgo_h_index"
 	_ "letgo_repo/code_lists/system_codes/letgo_max_consecutive_ones"
