@@ -109,6 +109,8 @@ var todoCmd = &cobra.Command{
 					switch todoQuestion.Status {
 					case enum.DONE:
 						numSliceStr += "✌️"
+					case enum.INITIALIZED:
+						numSliceStr += "☠️"
 					}
 					switch todoQuestion.Difficulty {
 					case "EASY":

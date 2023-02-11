@@ -10,6 +10,7 @@ type DATodo interface {
 	SelectTodoQuestionsByTodoId(todoIds int) []models.TodoQuestion
 	SelectDefaultSeriesName() (string, error)
 	ChangeDefaultSeries(series string) error
+	UpdateQuestionStatus(status string, id string, series string)
 }
 
 var DATodoV1 DATodo = &DATodoImpl{}

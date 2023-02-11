@@ -9,6 +9,16 @@ import (
 type DATodoImpl struct {
 }
 
+func (D *DATodoImpl) UpdateQuestionStatus(status string, id string, series string) {
+	updateSql := "update todo_questions,todos set status = ? where todos.id = todo_questions.todo_id and todos.series = ? and todo_questions.frontend_question_id = ?;"
+
+	err := data_access.MysqlDB.Exec(updateSql, status, series, id).Error
+	if err != nil {
+		panic(err)
+	}
+
+}
+
 func (D *DATodoImpl) ChangeDefaultSeries(series string) error {
 
 	updateSql := "update todos set default = null where dafalue = true;"

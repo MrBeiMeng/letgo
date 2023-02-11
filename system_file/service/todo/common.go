@@ -8,4 +8,5 @@ type ServiceTodo interface {
 	Save(todo type_def.AddTodo)
 	GetDefaultSeriesName() (string, error)
 	ChangeDefaultSeries(series string) error
+	UpdateQuestionStatus(status, frontId, series string)
 }

@@ -18,6 +18,10 @@ func (i ServiceTodoImpl) ChangeDefaultSeries(series string) error {
 	return todo.DATodoV1.ChangeDefaultSeries(series)
 }
 
+func (i ServiceTodoImpl) UpdateQuestionStatus(status, frontId, series string) {
+	todo.DATodoV1.UpdateQuestionStatus(status, frontId, series)
+}
+
 func (i ServiceTodoImpl) GetDefaultSeriesName() (string, error) {
 	return todo.DATodoV1.SelectDefaultSeriesName()
 }
