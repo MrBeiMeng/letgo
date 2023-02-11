@@ -5,6 +5,7 @@ import (
 	_ "letgo_repo/code_lists/system_codes/letgo_contains_duplicate_ii"
 	_ "letgo_repo/code_lists/system_codes/letgo_contains_duplicate_iii"
 	_ "letgo_repo/code_lists/system_codes/letgo_find_all_duplicates_in_an_array"
+	_ "letgo_repo/code_lists/system_codes/letgo_find_all_numbers_disappeared_in_an_array"
 	_ "letgo_repo/code_lists/system_codes/letgo_find_the_duplicate_number"
 	_ "letgo_repo/code_lists/system_codes/letgo_first_missing_positive"
 	_ "letgo_repo/code_lists/system_codes/letgo_h_index"
