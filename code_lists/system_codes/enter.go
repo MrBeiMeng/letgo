@@ -14,6 +14,8 @@ import (
 	_ "letgo_repo/code_lists/system_codes/letgo_maximum_product_of_three_numbers"
 	_ "letgo_repo/code_lists/system_codes/letgo_minimum_index_sum_of_two_lists"
 	_ "letgo_repo/code_lists/system_codes/letgo_missing_number"
+	_ "letgo_repo/code_lists/system_codes/letgo_product_of_array_except_self"
+	_ "letgo_repo/code_lists/system_codes/letgo_range_sum_query_immutable"
 	_ "letgo_repo/code_lists/system_codes/letgo_set_mismatch"
 	_ "letgo_repo/code_lists/system_codes/letgo_teemo_attacking"
 	_ "letgo_repo/code_lists/system_codes/letgo_third_maximum_number"
