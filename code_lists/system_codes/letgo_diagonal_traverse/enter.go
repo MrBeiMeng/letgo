@@ -1,0 +1,7 @@
+package letgo_diagonal_traverse
+
+import "letgo_repo/system_file/code_enter"
+
+func init() {
+	code_enter.Enter("system_codes", 498, findDiagonalOrder)
+}

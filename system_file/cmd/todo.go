@@ -123,7 +123,7 @@ var todoCmd = &cobra.Command{
 				}
 
 				for i := 1; i <= 5; i++ {
-					if i <= doneNum {
+					if i <= (doneNum/totalNum)*5 {
 						progressStr += "▰"
 						continue
 					}
