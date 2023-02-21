@@ -18,9 +18,6 @@ var manifestCmd = &cobra.Command{
 	Short: "查看题目清单",
 	Long:  `查看清单`,
 	Run: func(cmd *cobra.Command, args []string) {
-
-		// 当前只提供查询功能
-
 		if manifestParam.CaseAdd() {
 			// title,frontIds,tags,mark
 
@@ -78,7 +75,7 @@ var manifestParam param_def.ManifestCmdWrapper
 
 func init() {
 	rootCmd.AddCommand(manifestCmd)
-	manifestCmd.Flags().StringVar(&manifestParam.Add, "add", "", "添加题目至清单")
+	manifestCmd.Flags().StringVar(&manifestParam.Add, "add", "", "添加题目至清单 title,frontIds,tags,mark")
 	manifestCmd.Flags().StringVar(&manifestParam.Remove, "remove", "", "清除清单中的题目")
 	manifestCmd.Flags().StringSliceVar(&manifestParam.Set, "set", nil, "将清单题目列表重置成传入参数")
 	manifestCmd.Flags().BoolVar(&manifestParam.Create, "create", false, "创建清单")

@@ -81,4 +81,6 @@ func main() {
 	fmt.Println("After removing b:")
 	ml.Walk(cb)
 	fmt.Printf("Size of MapList: %d \n", ml.Size())
+
+	const name = "yes"
 }

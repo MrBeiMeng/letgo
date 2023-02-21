@@ -43,8 +43,6 @@ var todoCmd = &cobra.Command{
 			return
 		}
 
-		// 以下是展示，todo 改成展示默认系列
-
 		// 检查是否有额外参数
 		todoSeries := service.ServiceGroupV1.ServiceTodo.GetList(type_def.QueryWrapper{
 			todoParam.GetSeriesOrDefault(),
