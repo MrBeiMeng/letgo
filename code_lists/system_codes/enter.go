@@ -21,6 +21,7 @@ import (
 	_ "letgo_repo/code_lists/system_codes/letgo_set_mismatch"
 	_ "letgo_repo/code_lists/system_codes/letgo_spiral_matrix"
 	_ "letgo_repo/code_lists/system_codes/letgo_spiral_matrix_ii"
+	_ "letgo_repo/code_lists/system_codes/letgo_string_matching_in_an_array"
 	_ "letgo_repo/code_lists/system_codes/letgo_teemo_attacking"
 	_ "letgo_repo/code_lists/system_codes/letgo_third_maximum_number"
 	_ "letgo_repo/code_lists/system_codes/letgo_two_sum"
