@@ -8,6 +8,14 @@ import (
 
 var GlobalRetraction = make([]string, 0)
 
+func ReplaceAll(str string, argsMap map[string]string) string {
+	for key, value := range argsMap {
+		str = strings.ReplaceAll(str, fmt.Sprintf("${%s}", key), value)
+	}
+
+	return str
+}
+
 func Max(a, b int) int {
 	if a >= b {
 		return a
