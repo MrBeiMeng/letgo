@@ -21,13 +21,13 @@ func init() {
 
 	series1, err := todo.DATodoV1.SelectDefaultSeriesName()
 	if err != nil {
-		panic(err)
+		//panic(err)
+		logger.Logger.Warn(err.Error())
+	} else {
+		logger.Logger.Info("注入默认系列[%s]的解题代码", series1)
 	}
 
-	logger.Logger.Info("注入默认系列[%s]的解题代码", series1)
-
 	series = series1
-
 }
 
 func Enter(tmpSeries string, codeNum int, funci interface{}, tests ...string) {

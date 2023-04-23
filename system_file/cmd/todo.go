@@ -21,7 +21,7 @@ var todoCmd = &cobra.Command{
 
 		if todoParam.CaseAdd() {
 
-			service.ServiceGroupV1.ServiceTodo.Save(type_def.AddTodo{
+			service.SGroupV1.ServiceTodo.Save(type_def.AddTodo{
 				Series:       todoParam.GetSeriesOrDefault(),
 				ManifestList: todoParam.Add,
 			})
@@ -34,7 +34,7 @@ var todoCmd = &cobra.Command{
 				logger.Logger.Break("必须携带--series 参数")
 			}
 
-			err := service.ServiceGroupV1.ServiceTodo.ChangeDefaultSeries(todoParam.Series)
+			err := service.SGroupV1.ServiceTodo.ChangeDefaultSeries(todoParam.Series)
 			if err != nil {
 				panic(err)
 			}
@@ -44,7 +44,7 @@ var todoCmd = &cobra.Command{
 		}
 
 		// 检查是否有额外参数
-		todoSeries := service.ServiceGroupV1.ServiceTodo.GetList(type_def.QueryWrapper{
+		todoSeries := service.SGroupV1.ServiceTodo.GetList(type_def.QueryWrapper{
 			todoParam.GetSeriesOrDefault(),
 		})
 

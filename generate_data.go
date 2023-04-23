@@ -24,7 +24,7 @@ func main() {
 	headerMap["x-csrftoken"] = "Qg2oPO181zv8CQdSl68cyiD2pXyVFVEkgtEvMXvY4NKvqU31Xjj9mk7HlKO9YnPC"
 	headerMap["user-agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
 
-	for i := 0; i < 29-28; i++ {
+	for i := 0; i < 29; i++ {
 		skip = 100 * i
 		startedTime := time.Now()
 		println(fmt.Sprintf("%s\t|正在归档：[%d/%d]", startedTime.Format("2006-01-02:15:04:13"), skip, 28*100))
@@ -99,7 +99,7 @@ func SaveData(mQuestion models.Question) bool {
 			//return true
 		}
 
-		insertSql := `replace into questions_topic_tags (questions_id, topic_tags_id) values (?,?);`
+		insertSql := `replace into questions_topic_tags (question_id, topic_tags_id) values (?,?);`
 		err = db.Exec(insertSql, &mQuestion.ID, &topicTag.ID).Error
 		if err != nil {
 			println(utils2.GetColorRed(err.Error()))
@@ -115,7 +115,7 @@ func SaveData(mQuestion models.Question) bool {
 			return true
 		}
 
-		insertSql := `replace into questions_top_company_tags (questions_id, top_company_tags_id) values (?,?);`
+		insertSql := `replace into questions_top_company_tags (question_id, top_company_tags_id) values (?,?);`
 		err = db.Exec(insertSql, &mQuestion.ID, &topCompanyTag.ID).Error
 		if err != nil {
 			println(utils2.GetColorRed(err.Error()))

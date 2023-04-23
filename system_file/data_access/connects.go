@@ -9,7 +9,8 @@ import (
 var MysqlDB *gorm.DB
 
 func init() {
-	dsn := "root:123456@tcp(ali2-1.s:3306)/letgo?charset=utf8mb4&parseTime=True&loc=Local"
+	//dsn := "root:123456@tcp(ali2-1.s:3306)/letgo?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "user_letgo:letgo_XAmiaoYes123_@tcp(192.168.177.130:3306)/letgo?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(err)

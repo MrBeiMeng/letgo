@@ -50,7 +50,7 @@ var manifestCmd = &cobra.Command{
 			}
 
 			// 构造对象，调用方法
-			service.ServiceGroupV1.ServiceManifest.Save(tmpManifest)
+			service.SGroupV1.ServiceManifest.Save(tmpManifest)
 
 			return
 		}
@@ -58,7 +58,7 @@ var manifestCmd = &cobra.Command{
 		if manifestParam.CaseShow() {
 			printTable := make([][]string, 0)
 			printTable = append(printTable, []string{"标题", "标记", "标签", "题目列表"})
-			manifests := service.ServiceGroupV1.ServiceManifest.GetList()
+			manifests := service.SGroupV1.ServiceManifest.GetList()
 
 			for _, manifest := range manifests {
 				row := []string{manifest.Title, manifest.Mark, manifest.GetTags(), manifest.GetFrontIdsWithColor()}

@@ -1,9 +1,13 @@
 package type_def
 
 import (
+	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/liushuochen/gotable"
+	"io/ioutil"
 	"letgo_repo/system_file/data_access/models"
+	"letgo_repo/system_file/utils"
 	"strings"
 )
 
@@ -114,4 +118,33 @@ type RunWrapper struct {
 	SaveAll     bool // 强制保存
 	RightAnswer string
 	Done        bool
+}
+
+// VersionBody 用于解析version.json
+type VersionBody struct {
+	ProjectName string `json:"project_name"`
+	Versions    []struct {
+		VersionNo string `json:"version_no"`
+		Type      string `json:"type"`
+		Date      string `json:"date"`
+		Log       string `json:"log"`
+	} `json:"version"`
+}
+
+func (v *VersionBody) InitByJsonFile(filePath string) error {
+	byteStr, _ := ioutil.ReadFile(filePath)
+	//fmt.Println(string(byteStr))
+
+	err := json.Unmarshal(byteStr, &v)
+	if err != nil {
+		println(err.Error())
+		return errors.New("version 文件发生了一些错误")
+	}
+	if len(v.Versions) == 0 {
+		println(err.Error())
+		msg := utils.GetColorRed("version 历史信息为空!")
+		return errors.New(msg)
+	}
+
+	return nil
 }
