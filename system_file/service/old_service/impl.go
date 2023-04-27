@@ -320,7 +320,7 @@ func verifyAnswer(tmpAnswer string, tmpServiceArg type_def.QuestionTest) {
 	if strings.EqualFold(strings.TrimSpace(tmpAnswer), strings.TrimSpace(tmpServiceArg.RightAnswer)) {
 		fmt.Printf(" %v ", utils.GetColorGreen("●"))
 	} else {
-		fmt.Printf(" %v ", utils.GetColorRed("▼"))
+		fmt.Printf(" %v 正确答案：%s", utils.GetColorRed("▼"), tmpServiceArg.RightAnswer)
 	}
 
 	return

@@ -11,7 +11,7 @@ import (
 */
 
 type ListNode struct {
-	Val  string
+	Val  int
 	Next *ListNode
 }
 
@@ -23,7 +23,7 @@ func (l *ListNode) Sprint() string {
 	tmpNode := l
 	answerNums := make([]string, 0)
 	for tmpNode != nil {
-		answerNums = append(answerNums, tmpNode.Val)
+		answerNums = append(answerNums, strconv.Itoa(tmpNode.Val))
 		tmpNode = tmpNode.Next
 	}
 
@@ -47,7 +47,8 @@ func (a ArgsHandler) GetIntListNode(nums ...string) (head *ListNode) {
 	head = tmpHead
 
 	for i := 0; i < len(nums); i++ {
-		tmpHead.Val = nums[i]
+		num, _ := strconv.Atoi(nums[i])
+		tmpHead.Val = num
 		if i+1 < len(nums) {
 			nextHead := ListNode{}
 			tmpHead.Next = &nextHead
