@@ -371,6 +371,8 @@ func sprintCalled(calledList []reflect.Value) string {
 			fallthrough
 		case reflect.Bool:
 			return fmt.Sprintf("%v", cd)
+		case reflect.Array: // 数组和 slice 一视同仁
+			fallthrough
 		case reflect.Slice:
 
 			strAnswers := make([]string, 0)
