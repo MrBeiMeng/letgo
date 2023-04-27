@@ -8,6 +8,7 @@ import (
 	"letgo_repo/system_file/data_access/problems_mapper"
 	"letgo_repo/system_file/service/type_def"
 	utils "letgo_repo/system_file/utils"
+	"letgo_repo/system_file/utils/logger"
 	"reflect"
 	"sort"
 	"strconv"
@@ -131,6 +132,18 @@ func formatProgress(a int, b int, progress float64) (progressStr string) {
 
 func (c CodeServiceImpl) OperateLog(summary, msg, opType string) {
 	problems_mapper.ProblemsMapper.OperationLog(summary, msg, opType)
+}
+
+func (c CodeServiceImpl) GetByCodeNums(nums []string) (result type_def.Questions) {
+	for _, num := range nums {
+		numInt, err := strconv.Atoi(num)
+		if err != nil {
+			logger.Logger.Warn(err.Error())
+		}
+		result = append(result, c.GetByCodeNum(numInt))
+	}
+
+	return result
 }
 
 func (c CodeServiceImpl) GetByCodeNum(num int) (result type_def.Question) {

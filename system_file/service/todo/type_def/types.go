@@ -1,6 +1,7 @@
 package type_def
 
 import (
+	"gorm.io/gorm"
 	"letgo_repo/system_file/data_access/models"
 	"strings"
 )
@@ -19,6 +20,7 @@ type TodoSeries struct {
 }
 
 type Todo struct {
+	gorm.Model
 	ManifestTitle string `gorm:"type:varchar(255);"`
 	ManifestMark  string `gorm:"type:varchar(500)"`
 	ManifestTag   string `gorm:"type:varchar(1000);"`
@@ -38,6 +40,9 @@ func (t *Todo) ConvFrom(tmpModel models.Todo) Todo {
 	t.ManifestMark = tmpModel.ManifestMark
 	t.ManifestTitle = tmpModel.ManifestTitle
 	t.Series = tmpModel.Series
+	t.ID = tmpModel.ID
+	t.CreatedAt = tmpModel.CreatedAt
+	t.UpdatedAt = tmpModel.UpdatedAt
 	return *t
 }
 

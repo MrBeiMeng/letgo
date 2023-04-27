@@ -14,7 +14,7 @@ type DAManifestImpl struct{}
 func (i DAManifestImpl) InsertManifest(modelManifest models.Manifest) {
 	// ! replace and insert
 	var tmpModel models.Manifest
-	data_access.MysqlDB.Where("title = ?", modelManifest.Title).First(&tmpModel)
+	data_access.MysqlDB.Where("title = ?", modelManifest.Title).Find(&tmpModel)
 	if tmpModel.Tags != "" {
 		tmpMap := make(map[string]struct{})
 

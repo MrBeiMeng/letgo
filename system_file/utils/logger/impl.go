@@ -10,8 +10,8 @@ type LoggerImpl struct {
 }
 
 func (l LoggerImpl) Success(msg string, asg ...interface{}) {
-	//TODO implement me
-	panic("implement me")
+	fullMsg := getMsg(msg, asg...)
+	println(utils.GetColorGreen(fmt.Sprintf("info: %s", fullMsg)))
 }
 
 func (l LoggerImpl) Info(msg string, asg ...interface{}) {

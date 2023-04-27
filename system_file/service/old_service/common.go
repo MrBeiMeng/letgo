@@ -8,6 +8,7 @@ type CodeServiceI interface {
 	Search(wrapper type_def.CodeQueryWrapper) type_def.Questions
 	Run(arg type_def.RunWrapper)
 	InitTodoCode(num int)
+	GetByCodeNums(num []string) type_def.Questions
 	GetByCodeNum(num int) type_def.Question
 	OperateLog(summary, msg, opType string)
 	GetToDos() []type_def.ToDoQuestion

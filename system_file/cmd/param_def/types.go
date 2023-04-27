@@ -8,7 +8,7 @@ import (
 type ManifestCmdWrapper struct {
 	Add    string
 	Create bool
-	Show   bool
+	Show   string
 	Remove string
 	Clear  bool
 	Set    []string
@@ -19,7 +19,7 @@ func (m *ManifestCmdWrapper) CaseAdd() bool {
 }
 
 func (m *ManifestCmdWrapper) CaseShow() bool {
-	return m.Show
+	return m.Show != ""
 }
 
 type TodoCmdWrapper struct {

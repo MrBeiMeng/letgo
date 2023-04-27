@@ -21,14 +21,14 @@ func (D *DATodoImpl) UpdateQuestionStatus(status string, id string, series strin
 
 func (D *DATodoImpl) ChangeDefaultSeries(series string) error {
 
-	updateSql := "update todos set default = null where dafalue = true;"
+	updateSql := "update todos set `default`=null where `default`=true;"
 
 	err := data_access.MysqlDB.Exec(updateSql).Error
 	if err != nil {
 		return err
 	}
 
-	updateSql = "update todos set default = true where series = ?;"
+	updateSql = "update todos set `default` = true where series = ?;"
 	err = data_access.MysqlDB.Exec(updateSql, series).Error
 	if err != nil {
 		return err

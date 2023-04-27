@@ -11,11 +11,12 @@ import (
 	"letgo_repo/system_file/utils/enum"
 	"letgo_repo/system_file/utils/logger"
 	"strings"
+	"time"
 )
 
 var todoCmd = &cobra.Command{
 	Use:   "todo",
-	Short: "展示待做计划",
+	Short: "展示待做计划,series 表示一个系列，例如本周的任务，应表示问本系列，所以使用任何参数前请携带--series",
 	Long:  `展示待做计划`,
 	Run: func(cmd *cobra.Command, args []string) {
 
@@ -56,6 +57,7 @@ var todoCmd = &cobra.Command{
 			hardCount := 0
 			mediumCount := 0
 			easyCount := 0
+			creatTime := time.Now()
 
 			for _, todo := range todoSeries1.Todos {
 				for _, todoQuestion := range todo.TodoQuestions {
@@ -75,9 +77,10 @@ var todoCmd = &cobra.Command{
 
 					globalTotal += 1
 				}
+				creatTime = todo.CreatedAt
 			}
 
-			fmt.Printf("困难题: %s \t中等题: %s \t简单题: %s \t  完成与总数 [%d/%d]\n", utils.GetColorRed(fmt.Sprintf("%d", hardCount)), utils.GetColorYellow(fmt.Sprintf("%d", mediumCount)), utils.GetColorGreen(fmt.Sprintf("%d", easyCount)), globalDone, globalTotal)
+			fmt.Printf("困难题: %s \t中等题: %s \t简单题: %s \t  完成与总数 [%d/%d] 已创建[%s]天\n", utils.GetColorRed(fmt.Sprintf("%d", hardCount)), utils.GetColorYellow(fmt.Sprintf("%d", mediumCount)), utils.GetColorGreen(fmt.Sprintf("%d", easyCount)), globalDone, globalTotal, time.Now().Sub(creatTime))
 
 			strTable := make([][]string, 0)
 			strTable = append(strTable, []string{"标题", "标签", "题目列表", "进度条"})
