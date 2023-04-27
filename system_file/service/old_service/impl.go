@@ -306,12 +306,12 @@ func verifyAnswer(tmpAnswer string, tmpServiceArg type_def.QuestionTest) {
 
 			for i, value := range rightAnswerArr {
 				if tmpAnswerArr[i] != value {
-					fmt.Printf(" %v ", utils.GetColorRed(fmt.Sprintf("same check ▼ 正确答案\"%s\"", tmpServiceArg.RightAnswer)))
+					fmt.Printf(" %v ", utils.GetColorRed(fmt.Sprintf("equal check ▼ 正确答案\"%s\"", tmpServiceArg.RightAnswer)))
 					return
 				}
 			}
 
-			fmt.Printf(" %v ", utils.GetColorGreen("same check ●"))
+			fmt.Printf(" %v ", utils.GetColorGreen("equal check ●"))
 			return
 		}
 
