@@ -3,7 +3,6 @@ package old_service
 import (
 	"fmt"
 	"letgo_repo/system_file/code_enter"
-	data_access "letgo_repo/system_file/data_access"
 	"letgo_repo/system_file/data_access/models"
 	"letgo_repo/system_file/data_access/problems_mapper"
 	"letgo_repo/system_file/service/type_def"
@@ -150,12 +149,23 @@ func (c CodeServiceImpl) GetByCodeNum(num int) (result type_def.Question) {
 
 	var question models.Question
 
-	data_access.MysqlDB.Where("frontend_question_id = ?", num).First(&question)
+	//data_access.MysqlDB.Where("frontend_question_id = ?", num).First(&question)
+	question = problems_mapper.ProblemsMapper.GetByCodeNum(num)
 
 	result.Question = question
 	result.Url = "https://leetcode.cn/problems/" + question.TitleSlug
 	codeNum, _ := strconv.Atoi(question.FrontendQuestionId)
 	result.CodeNum = codeNum
+
+	result.Question = question
+	result.Url = "https://leetcode.cn/problems/" + question.TitleSlug
+	for _, topTag := range result.TopicTags {
+		result.Tags = append(result.Tags, topTag.NameTranslated)
+	}
+
+	for _, topCompanyTag := range result.TopCompanyTags {
+		result.TopUsedCompanies = append(result.TopUsedCompanies, topCompanyTag.Slug)
+	}
 	return result
 }
 

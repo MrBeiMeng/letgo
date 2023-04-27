@@ -17,7 +17,7 @@ import (
 // initCmd represents the init command
 var initCmd = &cobra.Command{
 	Use:   "init",
-	Short: "添加新的题目",
+	Short: "本地化新的题目",
 	Long:  `添加新的题目到列表`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {

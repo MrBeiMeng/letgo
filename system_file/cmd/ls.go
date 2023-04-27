@@ -27,7 +27,7 @@ func init() {
 
 var lsCmd = &cobra.Command{
 	Use:   "ls",
-	Short: "打印题目列表",
+	Short: "打印完成的题目列表",
 	Long:  `可以添加过滤条件`,
 	// 具体执行代码
 	Run: func(cmd *cobra.Command, args []string) {
