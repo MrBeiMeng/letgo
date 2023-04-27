@@ -10,6 +10,7 @@ import (
 	"letgo_repo/system_file/utils"
 	"letgo_repo/system_file/utils/enum"
 	"letgo_repo/system_file/utils/logger"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -46,11 +47,11 @@ var todoCmd = &cobra.Command{
 
 		// 检查是否有额外参数
 		todoSeries := service.SGroupV1.ServiceTodo.GetList(type_def.QueryWrapper{
-			todoParam.GetSeriesOrDefault(),
+			Series: todoParam.GetSeriesOrDefault(),
 		})
 
 		for _, todoSeries1 := range todoSeries {
-			fmt.Printf("************* %s ***************\n", todoSeries1.Series)
+			fmt.Printf("************* %s 系列 ***************\n\n", todoSeries1.Series)
 
 			globalDone := 0
 			globalTotal := 0
@@ -77,66 +78,56 @@ var todoCmd = &cobra.Command{
 
 					globalTotal += 1
 				}
-				creatTime = todo.CreatedAt
+				if creatTime.After(todo.CreatedAt) {
+					creatTime = todo.CreatedAt
+				}
 			}
 
-			fmt.Printf("困难题: %s \t中等题: %s \t简单题: %s \t  完成与总数 [%d/%d] 已创建[%s]天\n", utils.GetColorRed(fmt.Sprintf("%d", hardCount)), utils.GetColorYellow(fmt.Sprintf("%d", mediumCount)), utils.GetColorGreen(fmt.Sprintf("%d", easyCount)), globalDone, globalTotal, time.Now().Sub(creatTime))
+			fmt.Printf("此系列被创建已过去[%s]\n", time.Now().Sub(creatTime))
+
+			fmt.Printf("分析: 困难题: %s \t中等题: %s \t简单题: %s \t  完成与总数 [%d/%d]\n\n", utils.GetColorRed(fmt.Sprintf("%d", hardCount)), utils.GetColorYellow(fmt.Sprintf("%d", mediumCount)), utils.GetColorGreen(fmt.Sprintf("%d", easyCount)), globalDone, globalTotal)
 
 			strTable := make([][]string, 0)
-			strTable = append(strTable, []string{"标题", "标签", "题目列表", "进度条"})
-
+			strTable = append(strTable, []string{"no.", "标题", "level", "url", "ctn", "tags", "status"}) // 题目打印数组
 			for _, todo := range todoSeries1.Todos {
 				if todo.ManifestTitle == "" {
 					continue
 				}
-
 				doneNum := 0
 				totalNum := 0
 				// ▰▱_ •°↗→↘⇘⇗⇒
 
 				progressStr := ""
-				numSliceStr := ""
 
 				for _, todoQuestion := range todo.TodoQuestions {
+					codeNum, _ := strconv.Atoi(todoQuestion.FrontendQuestionId)
+					todoQuestionDetail := service.SGroupV1.CodeServiceI.GetByCodeNum(codeNum)
 					totalNum += 1
 					if todoQuestion.Status == enum.DONE {
 						doneNum += 1
 					}
 
-					if len(numSliceStr) != 0 {
-						numSliceStr += ","
-					}
-					numSliceStr += todoQuestion.FrontendQuestionId
 					switch todoQuestion.Status {
 					case enum.DONE:
-						numSliceStr += "✌️"
+						todoQuestion.Status += "✌️"
 					case enum.INITIALIZED:
-						numSliceStr += "☠️"
+						todoQuestion.Status += "☠️"
 					}
-					switch todoQuestion.Difficulty {
-					case "EASY":
-						numSliceStr += "⇘"
-					case "MEDIUM":
-						numSliceStr += "⇒"
-					case "HARD":
-						numSliceStr += "⇗"
-					}
+
+					strTable = append(strTable, []string{todoQuestion.FrontendQuestionId, todoQuestionDetail.TitleCn, todoQuestionDetail.Difficulty, todoQuestionDetail.Url, fmt.Sprintf("%d", todoQuestionDetail.CompanyTagNum), todoQuestionDetail.GetTags(), todoQuestion.Status})
 				}
 
-				for i := 1; i <= 5; i++ {
-					if i <= (doneNum/totalNum)*5 {
+				for i := 1; i <= 26; i++ {
+					if i <= (doneNum/totalNum)*26 {
 						progressStr += "▰"
 						continue
 					}
 					progressStr += "_"
 				}
-
-				progressStr = fmt.Sprintf("[%s]%d/%d", progressStr, doneNum, totalNum)
-
-				strTable = append(strTable, []string{todo.ManifestTitle, todo.ManifestTag, numSliceStr, fmt.Sprintf("%s", progressStr)})
+				fmt.Printf("清单:%s 进度: [%s]%d/%d 创建时间:[%s]\n", utils.GetColorCyan(todo.ManifestTitle), progressStr, doneNum, totalNum, todo.Model.CreatedAt.Format("2006-01-02 15:04:05"))
+				utils.TablePrint(strTable, true)
+				strTable = make([][]string, 0)
 			}
-
-			utils.TablePrint(strTable, true)
 		}
 
 	},

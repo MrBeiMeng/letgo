@@ -87,6 +87,10 @@ type Question struct {
 	CodeNum          int
 }
 
+func (q Question) GetTags() string {
+	return strings.Join(q.Tags, ",")
+}
+
 type CodeTemplateResp struct {
 	Data struct {
 		Question struct {
