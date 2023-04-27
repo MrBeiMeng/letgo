@@ -370,9 +370,16 @@ func sprintCalled(calledList []reflect.Value) string {
 		case reflect.Int:
 			fallthrough
 		case reflect.Bool:
-			fallthrough
-		case reflect.Slice:
 			return fmt.Sprintf("%v", cd)
+		case reflect.Slice:
+
+			strAnswers := make([]string, 0)
+
+			for i := 0; i < cd.Len(); i++ {
+				strAnswers = append(strAnswers, fmt.Sprintf("%v", cd.Index(i)))
+			}
+
+			return "[" + strings.Join(strAnswers, ",") + "]"
 		case reflect.Pointer:
 			linkedList := cd.Convert(reflect.TypeOf(&code_enter.ListNode{}))
 			call := linkedList.MethodByName("Sprint").Call([]reflect.Value{})

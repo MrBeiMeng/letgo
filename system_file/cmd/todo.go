@@ -22,7 +22,7 @@ var todoCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		if todoParam.CaseAdd() {
-
+			// todo 添加系列的同时应该可以支持设置默认，并且创建好对应的文件 包括cmd 文件夹下的enter.go
 			service.SGroupV1.ServiceTodo.Save(type_def.AddTodo{
 				Series:       todoParam.GetSeriesOrDefault(),
 				ManifestList: todoParam.Add,

@@ -82,7 +82,7 @@ func init() {
 	O_EXCL   int = syscall.O_EXCL   // 和 O_CREATE模式一起使用, 文件必须不存在
 	O_SYNC   int = syscall.O_SYNC   //打开文件用于同步 I/O.
 	O_TRUNC  int = syscall.O_TRUNC  // 打开文件时清空文件*/
-	oFile, err := os.OpenFile(fmt.Sprintf("code_lists/%s/enter.go", series), syscall.O_RDONLY, 666)
+	oFile, err := os.OpenFile(fmt.Sprintf("code_lists/%s/enter.go", series), syscall.O_CREAT, 666)
 	if err != nil {
 		panic(err)
 	}
@@ -95,8 +95,27 @@ func init() {
 
 	newLine := fmt.Sprintf("\"\n\t_ \"letgo_repo/code_lists/%s/letgo_%s\"\n)", series, fileName)
 
-	//allStr := strings.ReplaceAll(string(all), "// import at here", strings.ReplaceAll(newLine, "${structName}", ConvLineToCamel(slug)))
-	allStr := strings.ReplaceAll(string(all), "\"\n)", newLine)
+	allStr := ""
+	if strings.Contains(string(all), "import") {
+		//allStr := strings.ReplaceAll(string(all), "// import at here", strings.ReplaceAll(newLine, "${structName}", ConvLineToCamel(slug)))
+		allStr = strings.ReplaceAll(string(all), "\"\n)", newLine)
+	} else if strings.Contains(string(all), "package") {
+		allStr = strings.ReplaceAll(string(all), fmt.Sprintf("package %s\n", series), fmt.Sprintf(`package %s
+import (
+	_ "letgo_repo/code_lists/%s/letgo_%s"
+)`, series, series, fileName))
+	} else {
+		allStr = fmt.Sprintf(`package %s
+import (
+	_ "letgo_repo/code_lists/%s/letgo_%s"
+)
+
+var series string = "%s"
+
+func init() {
+	// enter new code here
+}`, series, series, fileName, series)
+	}
 
 	bFile, err := os.OpenFile(fmt.Sprintf("code_lists/%s/enter.go", series), syscall.O_RDWR, 777)
 	if err != nil {
