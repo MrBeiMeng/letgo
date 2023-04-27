@@ -51,7 +51,7 @@ var done bool
 func init() {
 	rootCmd.AddCommand(runCmd)
 	runCmd.Flags().StringVarP(&userArgs, "args", "a", "", "参数列表")
-	runCmd.Flags().StringVarP(&rightAnswer, "rightAnswer", "r", "", "正确结果")
+	runCmd.Flags().StringVarP(&rightAnswer, "rightAnswer", "r", "", "正确结果 例如equalArr@[1,2,3]表示返回结果可以是无序的。")
 	runCmd.PersistentFlags().BoolVarP(&saveAll, "saveAll", "s", false, "保存所有结果")
 	runCmd.PersistentFlags().BoolVarP(&done, "done", "d", false, "完成当前题目")
 }

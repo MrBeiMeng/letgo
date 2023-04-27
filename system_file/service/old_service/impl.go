@@ -282,31 +282,31 @@ func verifyAnswer(tmpAnswer string, tmpServiceArg type_def.QuestionTest) {
 		rightAnswer := tmpArr[1]
 
 		switch command {
+		//case "equalArr":
+		//	// 往下进行，直接比较
+		//
+		//	tmpAnswer := strings.TrimSpace(tmpAnswer)
+		//
+		//	//fmt.Printf("%s_%s", tmpAnswer, rightAnswer)
+		//	if strings.EqualFold(tmpAnswer, rightAnswer) {
+		//		fmt.Printf(" %v ", utils.GetColorGreen("equal check ●"))
+		//	} else {
+		//		fmt.Printf(" %v ", utils.GetColorRed("equal check ▼"))
+		//	}
+		//
+		//	return
+
 		case "equalArr":
-			// 往下进行，直接比较
 
-			tmpAnswer := strings.TrimSpace(tmpAnswer)
-
-			//fmt.Printf("%s_%s", tmpAnswer, rightAnswer)
-			if strings.EqualFold(tmpAnswer, rightAnswer) {
-				fmt.Printf(" %v ", utils.GetColorGreen("equal check ●"))
-			} else {
-				fmt.Printf(" %v ", utils.GetColorRed("equal check ▼"))
-			}
-
-			return
-
-		case "sameArr":
-
-			rightAnswerArr := strings.Split(strings.Trim(rightAnswer, "[] "), " ")
-			tmpAnswerArr := strings.Split(strings.Trim(tmpAnswer, "[] "), " ")
+			rightAnswerArr := strings.Split(strings.Trim(rightAnswer, "[] "), ",")
+			tmpAnswerArr := strings.Split(strings.Trim(tmpAnswer, "[] "), ",")
 
 			sort.Sort(sort.StringSlice(rightAnswerArr))
 			sort.Sort(sort.StringSlice(tmpAnswerArr))
 
 			for i, value := range rightAnswerArr {
 				if tmpAnswerArr[i] != value {
-					fmt.Printf(" %v ", utils.GetColorRed("same check ▼"))
+					fmt.Printf(" %v ", utils.GetColorRed(fmt.Sprintf("same check ▼ 正确答案\"%s\"", tmpServiceArg.RightAnswer)))
 					return
 				}
 			}
