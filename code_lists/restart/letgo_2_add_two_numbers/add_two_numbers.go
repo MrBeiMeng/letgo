@@ -1,4 +1,4 @@
-package letgo_add_two_numbers
+package letgo_2_add_two_numbers
 
 import (
 	. "letgo_repo/system_file/code_enter"

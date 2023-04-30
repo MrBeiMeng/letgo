@@ -1,4 +1,4 @@
-package letgo_two_sum
+package letgo_1_two_sum
 
 import (
 	_ "letgo_repo/system_file/code_enter"
