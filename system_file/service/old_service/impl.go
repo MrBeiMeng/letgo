@@ -369,6 +369,10 @@ func sprintCalled(calledList []reflect.Value) string {
 		switch cd.Kind() {
 		case reflect.Int:
 			fallthrough
+		case reflect.Float32:
+			fallthrough
+		case reflect.Float64:
+			return fmt.Sprintf("%g", cd.Float())
 		case reflect.Bool:
 			return fmt.Sprintf("%v", cd)
 		case reflect.Array: // 数组和 slice 一视同仁
