@@ -14,4 +14,5 @@ const (
 	ARR  = "数组"
 
 	INIT_CODE = "InitCode"
+	DONE_CODE = "DoneCode"
 )

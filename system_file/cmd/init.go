@@ -57,7 +57,7 @@ var initCmd = &cobra.Command{
 		service.SGroupV1.ServiceTodo.UpdateQuestionStatus(enum.INITIALIZED, question.FrontendQuestionId, defaultSeriesName)
 
 		fmt.Printf("%s| Inited %d %s %s", utils2.GetColorGreen("DONE"), question.CodeNum, question.TitleCn, question.Url)
-		old_service.CodeService.OperateLog(fmt.Sprintf("添加新题:%v", codeNum), golangCodeTemplate.Code, enum.INIT_CODE)
+		old_service.CodeService.OperateLog(fmt.Sprintf("%v", codeNum), question.TitleCn, enum.INIT_CODE)
 	},
 }
 

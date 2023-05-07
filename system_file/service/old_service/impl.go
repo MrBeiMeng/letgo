@@ -7,6 +7,7 @@ import (
 	"letgo_repo/system_file/data_access/problems_mapper"
 	"letgo_repo/system_file/service/type_def"
 	utils "letgo_repo/system_file/utils"
+	"letgo_repo/system_file/utils/enum"
 	"letgo_repo/system_file/utils/logger"
 	"reflect"
 	"sort"
@@ -196,9 +197,9 @@ func (c CodeServiceImpl) Run(runWrapper type_def.RunWrapper) {
 	fmt.Printf("| 函数类型\t| %s\n", t.String())
 
 	for _, tmpServiceArg := range serviceArgsList { //运行并打印日志
-		argsStrSlice := utils.RoughSplit(tmpServiceArg.Args)
+		argsStrSlice := utils.RoughSplit(tmpServiceArg.Args) // 粗切割
 
-		calledList, duration := runWithStrSlice(solution.RunFunc, argsStrSlice)
+		calledList, duration := runWithStrSlice(solution.RunFunc, argsStrSlice) // 通过参数调用解题函数
 
 		durationStr := durationFormat(duration)
 
@@ -222,6 +223,7 @@ func (c CodeServiceImpl) Run(runWrapper type_def.RunWrapper) {
 
 	if runWrapper.Done {
 		problems_mapper.ProblemsMapper.QuestionDone(fmt.Sprintf("%d", codeNum))
+		problems_mapper.ProblemsMapper.OperationLog(fmt.Sprintf("%v", codeNum), "", enum.DONE_CODE)
 		fmt.Printf("question status done\n")
 	}
 }
@@ -282,20 +284,6 @@ func verifyAnswer(tmpAnswer string, tmpServiceArg type_def.QuestionTest) {
 		rightAnswer := tmpArr[1]
 
 		switch command {
-		//case "equalArr":
-		//	// 往下进行，直接比较
-		//
-		//	tmpAnswer := strings.TrimSpace(tmpAnswer)
-		//
-		//	//fmt.Printf("%s_%s", tmpAnswer, rightAnswer)
-		//	if strings.EqualFold(tmpAnswer, rightAnswer) {
-		//		fmt.Printf(" %v ", utils.GetColorGreen("equal check ●"))
-		//	} else {
-		//		fmt.Printf(" %v ", utils.GetColorRed("equal check ▼"))
-		//	}
-		//
-		//	return
-
 		case "equalArr":
 
 			rightAnswerArr := strings.Split(strings.Trim(rightAnswer, "[] "), ",")
@@ -312,6 +300,17 @@ func verifyAnswer(tmpAnswer string, tmpServiceArg type_def.QuestionTest) {
 			}
 
 			fmt.Printf(" %v ", utils.GetColorGreen("equal check ●"))
+			return
+		case "in":
+			rightAnswerArr := strings.Split(strings.Trim(rightAnswer, "[] "), ",")
+
+			for _, str := range rightAnswerArr {
+				if strings.EqualFold(str, tmpAnswer) {
+					fmt.Printf(" %v ", utils.GetColorGreen(fmt.Sprintf("in [%s] ●", strings.Join(rightAnswerArr, ","))))
+					return
+				}
+			}
+			fmt.Printf(" %v ", utils.GetColorRed(fmt.Sprintf("not in 正确答案\"[%s]\"", strings.Join(rightAnswerArr, ","))))
 			return
 		}
 
@@ -367,6 +366,8 @@ func getArgs(codeNum int, argsStr string, rightAnswer string, solution code_ente
 func sprintCalled(calledList []reflect.Value) string {
 	for _, cd := range calledList {
 		switch cd.Kind() {
+		case reflect.String:
+			return fmt.Sprintf("%s", cd)
 		case reflect.Int:
 			fallthrough
 		case reflect.Float32:
