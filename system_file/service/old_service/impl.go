@@ -369,7 +369,7 @@ func sprintCalled(calledList []reflect.Value) string {
 		case reflect.String:
 			return fmt.Sprintf("%s", cd)
 		case reflect.Int:
-			fallthrough
+			return fmt.Sprintf("%d", cd.Int())
 		case reflect.Float32:
 			fallthrough
 		case reflect.Float64:
