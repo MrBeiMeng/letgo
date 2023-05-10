@@ -22,9 +22,10 @@ func ConvLineToCamel(name string) (camel string) {
 func InitFile(series, slug, url, titleCn string, codeNum int, code string) {
 	fileName := strings.ReplaceAll(slug, "-", "_")
 
-	os.MkdirAll(fmt.Sprintf("code_lists/%s/letgo_%d_%s", series, codeNum, fileName), 0777)
+	dirPath := fmt.Sprintf("code_lists/%s/letgo_%d_%s", series, codeNum, fileName)
+	os.MkdirAll(dirPath, 0777)
 
-	file, err := os.Create(fmt.Sprintf("code_lists/%s/letgo_%d_%s/%s.go", series, codeNum, fileName, fileName))
+	file, err := os.Create(fmt.Sprintf("%s/%s.go", dirPath, fileName))
 	if err != nil {
 		panic(err)
 	}
@@ -49,7 +50,7 @@ ${code}
 
 	file.WriteString(template)
 
-	file2, err := os.Create(fmt.Sprintf("code_lists/%s/letgo_%d_%s/enter.go", series, codeNum, fileName))
+	file2, err := os.Create(fmt.Sprintf("%s/enter.go", dirPath))
 	if err != nil {
 		panic(err)
 	}
@@ -93,7 +94,7 @@ func init() {
 	}
 	oFile.Close()
 
-	newLine := fmt.Sprintf("\"\n\t_ \"letgo_repo/code_lists/%s/letgo_%d_%s\"\n)", series, codeNum, fileName)
+	newLine := fmt.Sprintf("\"\n\t_ \"letgo_repo/%s\"\n)", dirPath)
 
 	allStr := ""
 	if strings.Contains(string(all), "import") {
@@ -102,19 +103,19 @@ func init() {
 	} else if strings.Contains(string(all), "package") {
 		allStr = strings.ReplaceAll(string(all), fmt.Sprintf("package %s\n", series), fmt.Sprintf(`package %s
 import (
-	_ "letgo_repo/code_lists/%s/letgo_%d_%s"
-)`, series, series, codeNum, fileName))
+	_ "letgo_repo/%s"
+)`, series, dirPath))
 	} else {
 		allStr = fmt.Sprintf(`package %s
 import (
-	_ "letgo_repo/code_lists/%s/letgo_%d_%s"
+	_ "letgo_repo/%s"
 )
 
 var series string = "%s"
 
 func init() {
 	// enter new code here
-}`, series, series, codeNum, fileName, series)
+}`, series, dirPath, series)
 	}
 
 	bFile, err := os.OpenFile(fmt.Sprintf("code_lists/%s/enter.go", series), syscall.O_RDWR, 777)
