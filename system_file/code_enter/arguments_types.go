@@ -75,11 +75,14 @@ func (a ArgsHandler) GetLinkedLists(linkedLists string) (result []*ListNode) {
 }
 
 func (a ArgsHandler) GetLinkedList(linkedList string) (result *ListNode) {
+	//if linkedList == "" {
+	//	return nil
+	//}
+
+	linkedList = strings.Trim(linkedList, "[] ")
 	if linkedList == "" {
 		return nil
 	}
-
-	linkedList = strings.Trim(linkedList, "[] ")
 	result = a.GetIntListNode(strings.Split(linkedList, ",")...)
 
 	return result
