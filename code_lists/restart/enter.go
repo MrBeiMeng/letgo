@@ -11,6 +11,7 @@ import (
 	_ "letgo_repo/code_lists/restart/letgo_20_valid_parentheses"
 	_ "letgo_repo/code_lists/restart/letgo_21_merge_two_sorted_lists"
 	_ "letgo_repo/code_lists/restart/letgo_22_generate_parentheses"
+	_ "letgo_repo/code_lists/restart/letgo_23_merge_k_sorted_lists"
 	_ "letgo_repo/code_lists/restart/letgo_2_add_two_numbers"
 	_ "letgo_repo/code_lists/restart/letgo_3_longest_substring_without_repeating_characters"
 	_ "letgo_repo/code_lists/restart/letgo_4_median_of_two_sorted_arrays"
