@@ -134,6 +134,21 @@ func init() {
 //	@return []string
 func RoughSplit(s string) (result []string) {
 	// [1,2,3],4,5,[6,7],8,[9],[10]
+	//
+	//// 设定一个首层切割标志,当面一旦超过首层便不再切割了。
+	//fistSlice := true
+	//builder := strings.Builder{}
+	//
+	//for _, char := range s {
+	//	if !fistSlice {
+	//		builder.WriteRune(char)
+	//		continue
+	//	}
+	//
+	//
+	//
+	//
+	//}
 
 	str := ""
 	splitFlag := 0

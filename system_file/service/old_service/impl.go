@@ -489,6 +489,13 @@ func runWithStrSlice(runFunc interface{}, argsStrSlice []string) ([]reflect.Valu
 func sliceHandler(t reflect.Type, i int, argsStrSlice []string, argsSlice []reflect.Value) []reflect.Value {
 	sliceKind := t.In(i).Elem().Kind()
 	switch sliceKind {
+	case reflect.Pointer:
+		list := make([]*code_enter.ListNode, 0)
+		for _, str := range utils.RoughSplit(argsStrSlice[i][1 : len(argsStrSlice[i])-1]) { // todo 危险魔数
+			linkedList := code_enter.ArgsHandlerV1.GetLinkedList(str)
+			list = append(list, linkedList)
+		}
+		argsSlice = append(argsSlice, reflect.ValueOf(list))
 	case reflect.Int:
 		nums := code_enter.ArgsHandlerV1.GetIntArr(argsStrSlice[i])
 		argsSlice = append(argsSlice, reflect.ValueOf(nums))
